@@ -115,10 +115,6 @@ msgid "Time to prepare for a break (in seconds)"
 msgstr ""
 
 # Settings dialog
-msgid "Keyboard shortcuts disabled period (in seconds)"
-msgstr ""
-
-# Settings dialog
 msgid "Postponement duration (in minutes)"
 msgstr ""
 
@@ -570,4 +566,7 @@ msgstr ""
 
 #, python-format
 msgid "Please install one of the command-line tools: %s"
+msgstr ""
+
+msgid "Skipping/postponing disabled period (in seconds)"
 msgstr ""
