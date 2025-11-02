@@ -41,6 +41,7 @@ class Config:
     def load(cls) -> "Config":
         # Read the config files
         user_config = utility.load_json(utility.CONFIG_FILE_PATH)
+        user_config_disk = copy.deepcopy(user_config)
         system_config = utility.load_json(utility.SYSTEM_CONFIG_FILE_PATH)
         # If there any breaking changes in long_breaks, short_breaks or any other keys,
         # use the force_upgrade_keys list
@@ -78,7 +79,9 @@ class Config:
         utility.merge_plugins(user_config)
 
         cfg = cls(user_config, system_config)
-        cfg.save()
+
+        if user_config != user_config_disk:
+            cfg.save()
 
         # if _create_startup_entry finds a broken autostart symlink, it will repair
         # it
@@ -119,6 +122,7 @@ class Config:
 
     def save(self) -> None:
         """Save the configuration to file."""
+        logging.debug("Writing config to disk")
         utility.write_json(utility.CONFIG_FILE_PATH, self.__user_config)
 
     def get(self, key, default_value=None):
