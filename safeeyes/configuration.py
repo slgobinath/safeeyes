@@ -47,14 +47,17 @@ class Config:
         force_upgrade_keys: list[str] = []
         # force_upgrade_keys = ['long_breaks', 'short_breaks']
 
-        # if _create_startup_entry finds a broken autostart symlink, it will repair
-        # it
-        cls._create_startup_entry(force=False)
         if user_config is None:
             cls._initialize_config()
             user_config = copy.deepcopy(system_config)
             cfg = cls(user_config, system_config)
             cfg.save()
+
+            # This gets called when the configuration file is not present, which
+            # happens just after installation or manual deletion of
+            # .config/safeeyes/safeeyes.json file. In this case, we want to force the
+            # creation of a startup entry
+            cls._create_startup_entry(force=True)
             return cfg
         else:
             system_config_version = system_config["meta"]["config_version"]
@@ -76,6 +79,11 @@ class Config:
 
         cfg = cls(user_config, system_config)
         cfg.save()
+
+        # if _create_startup_entry finds a broken autostart symlink, it will repair
+        # it
+        cls._create_startup_entry(force=False)
+
         return cfg
 
     def __init__(
@@ -131,17 +139,11 @@ class Config:
         return self.__user_config != config.__user_config
 
     @classmethod
-    def reset_config(cls) -> None:
-        # Remove the ~/.config/safeeyes/safeeyes.json and safeeyes_style.css
-        utility.delete(utility.CONFIG_FILE_PATH)
+    def reset_config(cls) -> "Config":
+        cls._initialize_config()
 
-        # Copy the safeeyes.json and safeeyes_style.css
-        shutil.copy2(utility.SYSTEM_CONFIG_FILE_PATH, utility.CONFIG_FILE_PATH)
-
-        # Add write permission (e.g. if original file was stored in /nix/store)
-        os.chmod(utility.CONFIG_FILE_PATH, 0o600)
-
-        cls._create_startup_entry()
+        # This calls _create_startup_entry()
+        return Config.load()
 
     @classmethod
     def _initialize_config(cls) -> None:
@@ -158,13 +160,9 @@ class Config:
 
         # Copy the safeeyes.json
         shutil.copy2(utility.SYSTEM_CONFIG_FILE_PATH, utility.CONFIG_FILE_PATH)
-        os.chmod(utility.CONFIG_FILE_PATH, 0o600)
 
-        # This method gets called when the configuration file is not present,
-        # which happens just after installation or manual deletion of
-        # .config/safeeyes/safeeyes.json file. In these cases, we want to force the
-        # creation of a startup entry
-        cls._create_startup_entry(force=True)
+        # Add write permission (e.g. if original file was stored in /nix/store)
+        os.chmod(utility.CONFIG_FILE_PATH, 0o600)
 
     @classmethod
     def _create_startup_entry(cls, force: bool = False) -> None:

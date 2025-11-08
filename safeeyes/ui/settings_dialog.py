@@ -172,8 +172,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
         def __confirmation_dialog_response(dialog, result) -> None:
             response_id = dialog.choose_finish(result)
             if response_id == 1:
-                Config.reset_config()
-                self.config = Config.load()
+                self.config = Config.reset_config()
                 # Remove breaks from the container
                 self.__clear_children(self.box_short_breaks)
                 self.__clear_children(self.box_long_breaks)
