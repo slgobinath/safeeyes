@@ -79,6 +79,7 @@ class Context(MutableMapping):
     api: API
     desktop: str
     is_wayland: bool
+    is_flatpak: bool
     locale: gettext.NullTranslations
     session: dict[str, typing.Any]
     state: State
@@ -100,6 +101,7 @@ class Context(MutableMapping):
         self.version = version
         self.desktop = utility.desktop_environment()
         self.is_wayland = utility.is_wayland()
+        self.is_flatpak = utility.is_flatpak()
         self.locale = locale
         self.session = session
         self.state = State.START
