@@ -175,9 +175,6 @@ class Config:
         startup_entry = os.path.join(
             startup_dir_path, "io.github.slgobinath.SafeEyes.desktop"
         )
-        # until Safe Eyes 2.1.5 the startup entry had another name
-        # https://github.com/slgobinath/safeeyes/commit/684d16265a48794bb3fd670da67283fe4e2f591b#diff-0863348c2143a4928518a4d3661f150ba86d042bf5320b462ea2e960c36ed275L398
-        obsolete_entry = os.path.join(startup_dir_path, "safeeyes.desktop")
 
         create_link = False
 
@@ -197,11 +194,6 @@ class Config:
                     # broken
                     create_link = True
 
-            if os.path.islink(obsolete_entry):
-                # if a link with the old naming exists, delete it and create a new one
-                create_link = True
-                utility.delete(obsolete_entry)
-
         if create_link:
             # Create the folder if not exist
             utility.mkdir(startup_dir_path)
@@ -214,3 +206,16 @@ class Config:
                 os.symlink(utility.SYSTEM_DESKTOP_FILE, startup_entry)
             except OSError:
                 logging.error("Failed to create startup entry at %s" % startup_entry)
+
+        cls._cleanup_old_startup_entry()
+
+    @classmethod
+    def _cleanup_old_startup_entry(cls) -> None:
+        startup_dir_path = os.path.join(utility.CONFIG_DIRECTORY, "autostart")
+
+        # until Safe Eyes 2.1.5 the startup entry had another name
+        # https://github.com/slgobinath/safeeyes/commit/684d16265a48794bb3fd670da67283fe4e2f591b#diff-0863348c2143a4928518a4d3661f150ba86d042bf5320b462ea2e960c36ed275L398
+        obsolete_entry = os.path.join(startup_dir_path, "safeeyes.desktop")
+
+        if os.path.exists(obsolete_entry):
+            utility.delete(obsolete_entry)
