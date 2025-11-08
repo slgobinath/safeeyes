@@ -321,6 +321,14 @@ class SettingsDialog(Gtk.ApplicationWindow):
         dialog.show()
 
     @Gtk.Template.Callback()
+    def on_request_autostart_clicked(self, button: Gtk.Button) -> None:
+        self.config.request_autostart()
+
+    @Gtk.Template.Callback()
+    def on_disable_autostart_clicked(self, button: Gtk.Button) -> None:
+        self.config.disable_autostart()
+
+    @Gtk.Template.Callback()
     def on_window_delete(self, *args) -> None:
         """Event handler for Settings dialog close action."""
         self.config.set(
