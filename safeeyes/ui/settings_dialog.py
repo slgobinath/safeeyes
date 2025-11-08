@@ -22,7 +22,8 @@ import typing
 
 import gi
 from safeeyes import utility
-from safeeyes.model import Config, PluginDependency
+from safeeyes.configuration import Config
+from safeeyes.model import PluginDependency
 from safeeyes.translations import translate as _
 
 gi.require_version("Gtk", "4.0")
