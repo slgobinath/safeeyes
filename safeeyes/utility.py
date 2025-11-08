@@ -45,6 +45,7 @@ gi.require_version("Gdk", "4.0")
 from gi.repository import Gdk
 from gi.repository import Gtk
 from gi.repository import GLib
+from gi.repository import Gio
 from gi.repository import GdkPixbuf
 from packaging.version import parse
 
@@ -353,6 +354,14 @@ def is_wayland():
     else:
         IS_WAYLAND = bool(re.search(b"wayland", output, re.IGNORECASE))
     return IS_WAYLAND
+
+
+def is_flatpak() -> bool:
+    """Determine if application is running inside flatpak.
+
+    This method is taken from GNOME's geary application.
+    """
+    return Gio.File.new_for_path("/.flatpak-info").query_exists()
 
 
 def execute_command(command, args=[]):
