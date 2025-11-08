@@ -22,7 +22,10 @@ configuration file.
 """
 
 import copy
+import logging
 from packaging.version import parse
+import os
+import shutil
 import typing
 
 from safeeyes import utility
@@ -44,11 +47,11 @@ class Config:
         force_upgrade_keys: list[str] = []
         # force_upgrade_keys = ['long_breaks', 'short_breaks']
 
-        # if create_startup_entry finds a broken autostart symlink, it will repair
+        # if _create_startup_entry finds a broken autostart symlink, it will repair
         # it
-        utility.create_startup_entry(force=False)
+        cls._create_startup_entry(force=False)
         if user_config is None:
-            utility.initialize_safeeyes()
+            cls._initialize_config()
             user_config = copy.deepcopy(system_config)
             cfg = cls(user_config, system_config)
             cfg.save()
@@ -126,3 +129,86 @@ class Config:
 
     def __ne__(self, config):
         return self.__user_config != config.__user_config
+
+    @classmethod
+    def reset_config(cls) -> None:
+        # Remove the ~/.config/safeeyes/safeeyes.json and safeeyes_style.css
+        utility.delete(utility.CONFIG_FILE_PATH)
+
+        # Copy the safeeyes.json and safeeyes_style.css
+        shutil.copy2(utility.SYSTEM_CONFIG_FILE_PATH, utility.CONFIG_FILE_PATH)
+
+        # Add write permission (e.g. if original file was stored in /nix/store)
+        os.chmod(utility.CONFIG_FILE_PATH, 0o600)
+
+        cls._create_startup_entry()
+
+    @classmethod
+    def _initialize_config(cls) -> None:
+        """Create the config file in XDG_CONFIG_HOME(or
+        ~/.config)/safeeyes directory.
+        """
+        logging.info("Copy the config files to XDG_CONFIG_HOME(or ~/.config)/safeeyes")
+
+        # Remove the ~/.config/safeeyes/safeeyes.json file
+        utility.delete(utility.CONFIG_FILE_PATH)
+
+        if not os.path.isdir(utility.CONFIG_DIRECTORY):
+            utility.mkdir(utility.CONFIG_DIRECTORY)
+
+        # Copy the safeeyes.json
+        shutil.copy2(utility.SYSTEM_CONFIG_FILE_PATH, utility.CONFIG_FILE_PATH)
+        os.chmod(utility.CONFIG_FILE_PATH, 0o600)
+
+        # This method gets called when the configuration file is not present,
+        # which happens just after installation or manual deletion of
+        # .config/safeeyes/safeeyes.json file. In these cases, we want to force the
+        # creation of a startup entry
+        cls._create_startup_entry(force=True)
+
+    @classmethod
+    def _create_startup_entry(cls, force: bool = False) -> None:
+        """Create start up entry."""
+        startup_dir_path = os.path.join(utility.HOME_DIRECTORY, ".config/autostart")
+        startup_entry = os.path.join(
+            startup_dir_path, "io.github.slgobinath.SafeEyes.desktop"
+        )
+        # until Safe Eyes 2.1.5 the startup entry had another name
+        # https://github.com/slgobinath/safeeyes/commit/684d16265a48794bb3fd670da67283fe4e2f591b#diff-0863348c2143a4928518a4d3661f150ba86d042bf5320b462ea2e960c36ed275L398
+        obsolete_entry = os.path.join(startup_dir_path, "safeeyes.desktop")
+
+        create_link = False
+
+        if force:
+            # if force is True, just create the link
+            create_link = True
+        else:
+            # if force is False, we want to avoid creating the startup symlink if it was
+            # manually deleted by the user, we want to create it only if a broken one is
+            # found
+            if os.path.islink(startup_entry):
+                # if the link exists, check if it is broken
+                try:
+                    os.stat(startup_entry)
+                except FileNotFoundError:
+                    # a FileNotFoundError will get thrown if the startup symlink is
+                    # broken
+                    create_link = True
+
+            if os.path.islink(obsolete_entry):
+                # if a link with the old naming exists, delete it and create a new one
+                create_link = True
+                utility.delete(obsolete_entry)
+
+        if create_link:
+            # Create the folder if not exist
+            utility.mkdir(startup_dir_path)
+
+            # Remove existing files
+            utility.delete(startup_entry)
+
+            # Create the new startup entry
+            try:
+                os.symlink(utility.SYSTEM_DESKTOP_FILE, startup_entry)
+            except OSError:
+                logging.error("Failed to create startup entry at %s" % startup_entry)
