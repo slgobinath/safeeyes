@@ -169,6 +169,16 @@ class Config:
         os.chmod(utility.CONFIG_FILE_PATH, 0o600)
 
     @classmethod
+    def request_autostart(cls) -> None:
+        """User requested autostart be enabled."""
+        cls._create_startup_entry(force=True)
+
+    @classmethod
+    def disable_autostart(cls) -> None:
+        """User requested autostart be disabled."""
+        cls._remove_startup_entry()
+
+    @classmethod
     def _create_startup_entry(cls, force: bool = False) -> None:
         """Create start up entry."""
         startup_dir_path = os.path.join(utility.HOME_DIRECTORY, ".config/autostart")
@@ -206,6 +216,19 @@ class Config:
                 os.symlink(utility.SYSTEM_DESKTOP_FILE, startup_entry)
             except OSError:
                 logging.error("Failed to create startup entry at %s" % startup_entry)
+
+        cls._cleanup_old_startup_entry()
+
+    @classmethod
+    def _remove_startup_entry(cls) -> None:
+        """Remove start up entry."""
+        startup_dir_path = os.path.join(utility.CONFIG_DIRECTORY, "autostart")
+        startup_entry = os.path.join(
+            startup_dir_path, "io.github.slgobinath.SafeEyes.desktop"
+        )
+
+        if os.path.exists(startup_entry):
+            utility.delete(startup_entry)
 
         cls._cleanup_old_startup_entry()
 

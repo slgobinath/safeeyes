@@ -523,6 +523,55 @@
                             </child>
                           </object>
                         </child>
+                        <child>
+                          <object class="GtkFrame">
+                            <property name="visible">1</property>
+                            <child type="label">
+                              <object class="GtkLabel">
+                                <property name="visible">1</property>
+                                <property name="label" translatable="yes">Startup</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">1</property>
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">10</property>
+                                <property name="margin-top">10</property>
+                                <property name="margin-bottom">10</property>
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">15</property>
+                                <property name="homogeneous">1</property>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="visible">1</property>
+                                    <property name="spacing">5</property>
+                                    <property name="homogeneous">1</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="visible">1</property>
+                                        <property name="halign">start</property>
+                                        <property name="label" translatable="yes">Automatically start on login</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton">
+                                        <property name="label" translatable="1">Request autostart</property>
+                                        <signal name="clicked" handler="on_request_autostart_clicked" swapped="no"/>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton">
+                                        <property name="label" translatable="1">Disable autostart</property>
+                                        <signal name="clicked" handler="on_disable_autostart_clicked" swapped="no"/>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
