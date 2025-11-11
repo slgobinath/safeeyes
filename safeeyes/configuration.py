@@ -27,8 +27,15 @@ from packaging.version import parse
 import os
 import shutil
 import typing
+from random import randint
 
 from safeeyes import utility
+from safeeyes.translations import translate as _
+
+import gi
+
+gi.require_version("Gtk", "4.0")
+from gi.repository import Gio, GLib
 
 
 class Config:
@@ -58,7 +65,7 @@ class Config:
             # happens just after installation or manual deletion of
             # .config/safeeyes/safeeyes.json file. In this case, we want to force the
             # creation of a startup entry
-            cls._create_startup_entry(force=True)
+            cls._enable_autostart_initial()
             return cfg
         else:
             system_config_version = system_config["meta"]["config_version"]
@@ -85,6 +92,10 @@ class Config:
 
         # if _create_startup_entry finds a broken autostart symlink, it will repair
         # it
+        # This intentionally only calls the non-flatpak method. In flatpak, there is no
+        # way to know if the startup entry was deleted - so it would effectively request
+        # it every time.
+        # There should also be no broken symlink issues on flatpak.
         cls._create_startup_entry(force=False)
 
         return cfg
@@ -146,7 +157,7 @@ class Config:
     def reset_config(cls) -> "Config":
         cls._initialize_config()
 
-        # This calls _create_startup_entry()
+        # This calls _enable_autostart_initial()
         return Config.load()
 
     @classmethod
@@ -171,16 +182,128 @@ class Config:
     @classmethod
     def request_autostart(cls) -> None:
         """User requested autostart be enabled."""
-        cls._create_startup_entry(force=True)
+        logging.debug("autostart requested")
+        if utility.is_flatpak():
+            cls._request_autostart_portal(autostart=True)
+        else:
+            cls._create_startup_entry(force=True)
 
     @classmethod
     def disable_autostart(cls) -> None:
         """User requested autostart be disabled."""
-        cls._remove_startup_entry()
+        if utility.is_flatpak():
+            cls._request_autostart_portal(autostart=False)
+        else:
+            cls._remove_startup_entry()
+
+    @classmethod
+    def _enable_autostart_initial(cls) -> None:
+        """Config file was missing or reset - enable autostart by default."""
+        if utility.is_flatpak():
+            cls._request_autostart_portal(autostart=True)
+        else:
+            cls._create_startup_entry(force=True)
+
+    @classmethod
+    def _request_autostart_portal(cls, autostart: bool) -> None:
+        """Request autostart for flatpak app."""
+        bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+
+        portal_proxy = Gio.DBusProxy.new_sync(
+            connection=bus,
+            flags=Gio.DBusProxyFlags.NONE,
+            info=None,
+            name="org.freedesktop.portal.Desktop",
+            object_path="/org/freedesktop/portal/desktop",
+            interface_name="org.freedesktop.portal.Background",
+            cancellable=None,
+        )
+
+        token = 0 + randint(10000000, 90000000)
+        if bus.props.unique_name is None:
+            # not sure when this happens.
+            # in any case - just set the expected_handle to something that it
+            # shouldn't be so we hit the fallback path below
+            sender = ""
+            expected_handle = ""
+        else:
+            # see
+            # https://github.com/flatpak/xdg-desktop-portal/blob/main/data/org.freedesktop.portal.Request.xml
+            # for more information here
+            sender = bus.props.unique_name.lstrip(":").replace(".", "_")
+
+            expected_handle = (
+                f"/org/freedesktop/portal/desktop/request/{sender}/{token}"
+            )
+
+            bus.signal_subscribe(
+                sender="org.freedesktop.portal.Desktop",
+                interface_name="org.freedesktop.portal.Request",
+                member="Response",
+                object_path=expected_handle,
+                arg0=None,
+                flags=Gio.DBusSignalFlags.NONE,
+                callback=cls.__receive_autostart,
+                user_data={"autostart": autostart},
+            )
+
+        options = {
+            "handle_token": GLib.Variant("s", f"{token}"),
+            "reason": GLib.Variant("s", _("Safe Eyes wants to run in the background.")),
+            "autostart": GLib.Variant("b", autostart),
+            # not sure what this means...
+            "dbus-activatable": GLib.Variant("b", False),
+        }
+
+        # Geary also just sends the app id here, so we presumably do not need a window
+        parent_window = "io.github.slgobinath.SafeEyes"
+
+        request_handle = portal_proxy.RequestBackground(  # type: ignore[attr-defined]
+            "(sa{sv})", parent_window, options
+        )
+
+        if request_handle != expected_handle:
+            # This is recommended as a fallback in
+            # https://github.com/flatpak/xdg-desktop-portal/blob/main/data/org.freedesktop.portal.Request.xml
+            # When this happens, there is a possibility of a race condition, in which
+            # the reply can be missed
+            logging.debug(
+                f"expected handle {expected_handle}, got {request_handle}, falling back"
+            )
+            bus.signal_subscribe(
+                sender="org.freedesktop.portal.Desktop",
+                interface_name="org.freedesktop.portal.Request",
+                member="Response",
+                object_path=request_handle,
+                arg0=None,
+                flags=Gio.DBusSignalFlags.NONE,
+                callback=cls.__receive_autostart,
+                user_data={"autostart": autostart},
+            )
+
+    @classmethod
+    def __receive_autostart(
+        cls, conn, addr, object_path, interface_name, member, response, user_data
+    ) -> None:
+        """
+        This method may or may not be called on older platforms due to the race
+        condition above.
+        If it does get called, and the request is denied, at least do some logging.
+        """
+        if response[0] != 0:
+            logging.error("Autostart request was cancelled")
+        else:
+            results = response[1]
+
+            if not results["background"]:
+                logging.error("Running in the background was denied")
+
+            if results["autostart"] != user_data["autostart"]:
+                logging.error("Autostart was denied")
 
     @classmethod
     def _create_startup_entry(cls, force: bool = False) -> None:
-        """Create start up entry."""
+        """Create start up entry for non-flatpak app."""
         startup_dir_path = os.path.join(utility.HOME_DIRECTORY, ".config/autostart")
         startup_entry = os.path.join(
             startup_dir_path, "io.github.slgobinath.SafeEyes.desktop"
@@ -205,6 +328,7 @@ class Config:
                     create_link = True
 
         if create_link:
+            logging.debug(f"Creating startup entry at {startup_entry}")
             # Create the folder if not exist
             utility.mkdir(startup_dir_path)
 
