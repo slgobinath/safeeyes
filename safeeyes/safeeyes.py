@@ -138,8 +138,6 @@ class SafeEyes(Gtk.Application):
         utility.initialize_platform()
         utility.cleanup_old_user_stylesheet()
 
-        self.config = Config.load()
-
         if options.contains("version"):
             print(f"Safe Eyes {SAFE_EYES_VERSION}")
             return 0  # exit
@@ -229,6 +227,8 @@ class SafeEyes(Gtk.Application):
         Gtk.Application.do_startup(self)
 
         logging.info("Starting up Application")
+
+        self.config = Config.load()
 
         # Initialize the Safe Eyes Context
         if self.config.get("persist_state"):
