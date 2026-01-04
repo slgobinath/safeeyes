@@ -94,6 +94,7 @@
                     <div class="tab-btn" data-tab="arch">Arch</div>
                     <div class="tab-btn" data-tab="debian">Debian</div>
                     <div class="tab-btn" data-tab="fedora">Fedora</div>
+                    <div class="tab-btn" data-tab="gentoo">Gentoo</div>
                     <div class="tab-btn" data-tab="opensuse">OpenSUSE</div>
                     <div class="tab-btn" data-tab="flatpak">Flatpak</div>
                     <div class="tab-btn" data-tab="other">Other Linux</div>
@@ -143,7 +144,19 @@ sudo dnf -y install python3-safeeyes</code></pre>
                         </div>
                         <p>For smart pause plugin, you may have to install the latest xprintidle from: <a href="https://copr.fedorainfracloud.org/coprs/alonid/xprintidle/" target="_blank">alonid/xprintidle</a></p>
                     </div>
-                    
+
+                    <div class="tab-pane" id="gentoo">
+                        <h3>Gentoo</h3>
+                        <div class="code-block">
+                            <pre><code>sudo emerge -av x11-misc/safeeyes</code></pre>
+                            <button class="copy-btn" data-clipboard-target="#gentoo-code">Copy</button>
+                        </div>
+                        <p>
+                            More information on Safe Eyes' Gentoo packaging can be found at
+                            <a href="https://packages.gentoo.org/packages/x11-misc/safeeyes"><code>packages.gentoo.org</code></a>.
+                        </p>
+                    </div>
+
                     <div class="tab-pane" id="opensuse">
                         <h3>OpenSUSE Tumbleweed</h3>
                         <div class="code-block">
