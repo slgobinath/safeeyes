@@ -80,6 +80,8 @@ class SettingsDialog(Gtk.ApplicationWindow):
     switch_persist: Gtk.Switch = Gtk.Template.Child()
     info_bar_long_break: Gtk.InfoBar = Gtk.Template.Child()
 
+    btn_apply: Gtk.Button = Gtk.Template.Child()
+
     plugin_items: dict[str, "PluginItem"]
     plugin_map: dict[str, str]
     original_config: Config
@@ -113,6 +115,11 @@ class SettingsDialog(Gtk.ApplicationWindow):
 
         self.last_short_break_interval = config.get("short_break_interval")
 
+        # Remove breaks from the container
+        self.__clear_children(self.box_short_breaks)
+        self.__clear_children(self.box_long_breaks)
+        self.__clear_children(self.box_plugins)
+
         for short_break in config.get("short_breaks"):
             self.__create_break_item(short_break, True)
         for long_break in config.get("long_breaks"):
@@ -143,6 +150,8 @@ class SettingsDialog(Gtk.ApplicationWindow):
         self.info_bar_long_break.hide()
         self.infobar_long_break_shown = False
 
+        self.btn_apply.set_sensitive(False)
+
         self.initializing = False
 
     def __create_break_item(self, break_config: dict, is_short: bool) -> None:
@@ -169,10 +178,6 @@ class SettingsDialog(Gtk.ApplicationWindow):
             response_id = dialog.choose_finish(result)
             if response_id == 1:
                 new_config = Config.reset_config()
-                # Remove breaks from the container
-                self.__clear_children(self.box_short_breaks)
-                self.__clear_children(self.box_long_breaks)
-                self.__clear_children(self.box_plugins)
                 # Initialize again
                 self.__initialize(new_config)
 
@@ -223,6 +228,8 @@ class SettingsDialog(Gtk.ApplicationWindow):
             self.config.get("long_breaks").remove(break_item.break_config)
             self.box_long_breaks.remove(break_item)
 
+        self._set_apply_sensitive()
+
     def __update_break(
         self, break_item: "BreakItem", new_break_config: dict, new_is_short: bool
     ) -> None:
@@ -252,6 +259,8 @@ class SettingsDialog(Gtk.ApplicationWindow):
 
         break_item.update_break_name()
 
+        self._set_apply_sensitive()
+
     def __add_break(self, break_config: dict, is_short: bool) -> None:
         self.__create_break_item(break_config, is_short)
 
@@ -259,6 +268,8 @@ class SettingsDialog(Gtk.ApplicationWindow):
             self.config.get("short_breaks").append(break_config)
         else:
             self.config.get("long_breaks").append(break_config)
+
+        self._set_apply_sensitive()
 
     def __create_plugin_item(self, plugin_config: dict) -> "PluginItem":
         """Create an entry for plugin to be listed in the plugin tab."""
@@ -282,11 +293,15 @@ class SettingsDialog(Gtk.ApplicationWindow):
         index = self.__index_of_plugin(self.config.get("plugins"), plugin_id)
         self.config.get("plugins")[index]["enabled"] = active
 
+        self._set_apply_sensitive()
+
     def __on_update_plugin_config(self, plugin_id: str, new_settings: dict) -> None:
         index = self.__index_of_plugin(self.config.get("plugins"), plugin_id)
         # this preserves any settings that are not visible in the ui
         # and only editable in the json file directly
         self.config.get("plugins")[index]["settings"].update(new_settings)
+
+        self._set_apply_sensitive()
 
     @staticmethod
     def __index_of_plugin(plugins: list[dict], plugin_id: str) -> int:
@@ -319,6 +334,9 @@ class SettingsDialog(Gtk.ApplicationWindow):
         """Show the SettingsDialog."""
         self.present()
 
+    def _set_apply_sensitive(self) -> None:
+        self.btn_apply.set_sensitive(self.config != self.original_config)
+
     @Gtk.Template.Callback()
     def on_switch_postpone_activate(self, switch, state) -> None:
         """Event handler to the state change of the postpone switch.
@@ -331,6 +349,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
 
         if not self.initializing:
             self.config.set("allow_postpone", self.switch_postpone.get_active())
+            self._set_apply_sensitive()
 
     @Gtk.Template.Callback()
     def on_dropdown_postpone_unit_selected_item(self, dropdown, _pspec) -> None:
@@ -343,6 +362,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
                     Gtk.StringObject, self.dropdown_postpone_unit.get_selected_item()
                 ).get_string(),
             )
+            self._set_apply_sensitive()
 
     @Gtk.Template.Callback()
     def on_spin_postpone_duration_change(self, spin_button, *value) -> None:
@@ -350,6 +370,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
             self.config.set(
                 "postpone_duration", self.spin_postpone_duration.get_value_as_int()
             )
+            self._set_apply_sensitive()
 
     @Gtk.Template.Callback()
     def on_spin_short_break_interval_change(self, spin_button, *value) -> None:
@@ -377,6 +398,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
             self.config.set(
                 "long_break_interval", self.spin_long_break_interval.get_value_as_int()
             )
+            self._set_apply_sensitive()
 
     @Gtk.Template.Callback()
     def on_spin_short_break_duration_change(self, spin_button, *value) -> None:
@@ -385,6 +407,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
                 "short_break_duration",
                 self.spin_short_break_duration.get_value_as_int(),
             )
+            self._set_apply_sensitive()
 
     @Gtk.Template.Callback()
     def on_spin_long_break_interval_change(self, spin_button, *value) -> None:
@@ -397,6 +420,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
             self.config.set(
                 "long_break_interval", self.spin_long_break_interval.get_value_as_int()
             )
+            self._set_apply_sensitive()
 
     @Gtk.Template.Callback()
     def on_spin_long_break_duration_change(self, spin_button, *value) -> None:
@@ -404,6 +428,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
             self.config.set(
                 "long_break_duration", self.spin_long_break_duration.get_value_as_int()
             )
+            self._set_apply_sensitive()
 
     @Gtk.Template.Callback()
     def on_info_bar_long_break_close(self, infobar, *user_data) -> None:
@@ -416,16 +441,19 @@ class SettingsDialog(Gtk.ApplicationWindow):
             self.config.set(
                 "pre_break_warning_time", self.spin_time_to_prepare.get_value_as_int()
             )
+            self._set_apply_sensitive()
 
     @Gtk.Template.Callback()
     def on_switch_random_order_activated(self, switch, _gparam) -> None:
         if not self.initializing:
             self.config.set("random_order", self.switch_random_order.get_active())
+            self._set_apply_sensitive()
 
     @Gtk.Template.Callback()
     def on_switch_strict_break_activated(self, switch, _gparam) -> None:
         if not self.initializing:
             self.config.set("strict_break", self.switch_strict_break.get_active())
+            self._set_apply_sensitive()
 
     @Gtk.Template.Callback()
     def on_spin_shortcut_disable_time_change(self, spin_button, *value) -> None:
@@ -434,11 +462,13 @@ class SettingsDialog(Gtk.ApplicationWindow):
                 "shortcut_disable_time",
                 self.spin_disable_keyboard_shortcut.get_value_as_int(),
             )
+            self._set_apply_sensitive()
 
     @Gtk.Template.Callback()
     def on_switch_persist_state_activated(self, switch, _gparam) -> None:
         if not self.initializing:
             self.config.set("persist_state", self.switch_persist.get_active())
+            self._set_apply_sensitive()
 
     @Gtk.Template.Callback()
     def add_break(self, button) -> None:
@@ -457,6 +487,13 @@ class SettingsDialog(Gtk.ApplicationWindow):
         self.on_close()
 
         self.destroy()
+
+    @Gtk.Template.Callback()
+    def on_apply_clicked(self, *args) -> None:
+        if self.config != self.original_config:
+            self.on_save_settings(self.config)  # Call the provided save method
+
+        self.__initialize(self.config)
 
     @Gtk.Template.Callback()
     def on_cancel_clicked(self, *args) -> None:

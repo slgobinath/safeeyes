@@ -730,6 +730,28 @@
               </object>
             </child>
             <child>
+              <object class="GtkButton" id="btn_apply">
+                <property name="sensitive">0</property>
+                <signal name="clicked" handler="on_apply_clicked" swapped="no"/>
+                <child>
+                  <object class="GtkBox">
+                    <property name="spacing">6</property>
+                    <property name="halign">center</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon-name">dialog-ok-apply-symbolic</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="1">Apply</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="GtkButton" id="btn_cancel">
                 <signal name="clicked" handler="on_cancel_clicked" swapped="no"/>
                 <child>
