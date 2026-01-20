@@ -450,14 +450,56 @@ class SettingsDialog(Gtk.ApplicationWindow):
         dialog.show()
 
     @Gtk.Template.Callback()
-    def on_window_delete(self, *args) -> None:
-        """Event handler for Settings dialog close action."""
+    def on_ok_clicked(self, *args) -> None:
         if self.config != self.original_config:
             self.on_save_settings(self.config)  # Call the provided save method
 
         self.on_close()
 
         self.destroy()
+
+    @Gtk.Template.Callback()
+    def on_cancel_clicked(self, *args) -> None:
+        # Should we ask here for confirmation to discard if there are changes?
+        self.on_close()
+
+        self.destroy()
+
+    @Gtk.Template.Callback()
+    def on_window_delete(self, *args) -> bool:
+        """Called when the close button in the title bar is clicked."""
+        if self.config == self.original_config:
+            # No changes, just close the window
+            self.on_close()
+            self.destroy()
+            return False
+
+        def __confirmation_dialog_response(dialog, result) -> None:
+            response_id = dialog.choose_finish(result)
+            if response_id == 0:  # Save
+                self.on_save_settings(self.config)  # Call the provided save method
+                self.on_close()
+                self.destroy()
+            elif response_id == 1:  # Discard
+                self.on_close()
+                self.destroy()
+            elif response_id == 2:  # Keep editing
+                pass
+
+        messagedialog = Gtk.AlertDialog()
+        messagedialog.set_modal(True)
+        messagedialog.set_buttons([_("Save"), _("Discard"), _("Keep editing")])
+        messagedialog.set_message(
+            _("There are unsaved changes. Do you want to save them?")
+        )
+
+        messagedialog.set_cancel_button(0)
+        messagedialog.set_default_button(0)
+
+        messagedialog.choose(self, None, __confirmation_dialog_response)
+
+        # This cancels the close request
+        return True
 
 
 @Gtk.Template(filename=SETTINGS_BREAK_ITEM_GLADE)

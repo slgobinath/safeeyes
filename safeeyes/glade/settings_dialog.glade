@@ -691,6 +691,67 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="margin_top">5</property>
+            <property name="margin_bottom">5</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="buttonbox">
+            <property name="valign">start</property>
+            <property name="halign">end</property>
+            <property name="margin-end">5</property>
+            <property name="margin-bottom">5</property>
+            <property name="hexpand">1</property>
+            <property name="vexpand">0</property>
+            <property name="homogeneous">1</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkButton" id="btn_ok">
+                <signal name="clicked" handler="on_ok_clicked" swapped="no"/>
+                <property name="receives-default">1</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="spacing">6</property>
+                    <property name="halign">center</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon-name">dialog-ok-apply-symbolic</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="1">OK</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="btn_cancel">
+                <signal name="clicked" handler="on_cancel_clicked" swapped="no"/>
+                <child>
+                  <object class="GtkBox">
+                    <property name="spacing">6</property>
+                    <property name="halign">center</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon-name">dialog-cancel-symbolic</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="1">Cancel</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
     <child type="titlebar">
