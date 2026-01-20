@@ -270,7 +270,6 @@ def load_plugins_config(safeeyes_config):
         config["id"] = plugin["id"]
         config["icon"] = icon
         config["enabled"] = plugin["enabled"]
-        config["active_plugin_config"] = plugin.get("settings")
 
         configs.append(config)
     return configs

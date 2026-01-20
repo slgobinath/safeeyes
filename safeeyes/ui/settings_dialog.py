@@ -268,9 +268,26 @@ class SettingsDialog(Gtk.ApplicationWindow):
         box.set_visible(True)
         return box
 
+    def __on_update_plugin_config(self, plugin_id: str, new_settings: dict) -> None:
+        index = self.__index_of_plugin(self.config.get("plugins"), plugin_id)
+        # this preserves any settings that are not visible in the ui
+        # and only editable in the json file directly
+        self.config.get("plugins")[index]["settings"].update(new_settings)
+
+    @staticmethod
+    def __index_of_plugin(plugins: list[dict], plugin_id: str) -> int:
+        return list(map(lambda p: p["id"] == plugin_id, plugins)).index(True)
+
     def __show_plugins_properties_dialog(self, plugin_config: dict) -> None:
         """Show the PluginProperties dialog."""
-        dialog = PluginSettingsDialog(self, plugin_config)
+        index = self.__index_of_plugin(self.config.get("plugins"), plugin_config["id"])
+        plugin_settings = self.config.get("plugins")[index]["settings"]
+        dialog = PluginSettingsDialog(
+            self,
+            plugin_config,
+            plugin_settings,
+            on_update_plugin_config=self.__on_update_plugin_config,
+        )
         dialog.show()
 
     def __show_break_properties_dialog(self, break_item: "BreakItem") -> None:
@@ -544,30 +561,36 @@ class PluginSettingsDialog(Gtk.Window):
     __gtype_name__ = "PluginSettingsDialog"
 
     box_settings: Gtk.Box = Gtk.Template.Child()
+    on_update_plugin_config: typing.Callable[[str, dict], None]
 
-    def __init__(self, parent: Gtk.Window, config: typing.Any):
+    plugin_id: str
+
+    def __init__(
+        self,
+        parent: Gtk.Window,
+        config: dict,
+        plugin_settings: dict,
+        on_update_plugin_config: typing.Callable[[str, dict], None],
+    ):
         super().__init__(transient_for=parent)
 
-        self.config = config
+        self.plugin_id = config["id"]
         self.property_controls = []
+        self.on_update_plugin_config = on_update_plugin_config
 
-        for setting in config.get("settings"):
+        for setting in config.get("settings", []):
             box: typing.Union[IntItem, BoolItem, TextItem]
             if setting["type"].upper() == "INT":
                 box = IntItem(
                     setting["label"],
-                    config["active_plugin_config"][setting["id"]],
+                    plugin_settings[setting["id"]],
                     setting.get("min", 0),
                     setting.get("max", 120),
                 )
             elif setting["type"].upper() == "TEXT":
-                box = TextItem(
-                    setting["label"], config["active_plugin_config"][setting["id"]]
-                )
+                box = TextItem(setting["label"], plugin_settings[setting["id"]])
             elif setting["type"].upper() == "BOOL":
-                box = BoolItem(
-                    setting["label"], config["active_plugin_config"][setting["id"]]
-                )
+                box = BoolItem(setting["label"], plugin_settings[setting["id"]])
             else:
                 continue
 
@@ -577,10 +600,10 @@ class PluginSettingsDialog(Gtk.Window):
     @Gtk.Template.Callback()
     def on_window_delete(self, *args) -> None:
         """Event handler for Properties dialog close action."""
+        new_settings = {}
         for property_control in self.property_controls:
-            self.config["active_plugin_config"][property_control["key"]] = (
-                property_control["box"].get_value()
-            )
+            new_settings[property_control["key"]] = property_control["box"].get_value()
+        self.on_update_plugin_config(self.plugin_id, new_settings)
         self.destroy()
 
     def show(self) -> None:
