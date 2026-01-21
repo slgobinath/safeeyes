@@ -144,7 +144,8 @@ class SettingsDialog(Gtk.ApplicationWindow):
             parent_box = self.box_short_breaks
 
         box: "BreakItem" = BreakItem(
-            break_name=break_config["name"],
+            break_config,
+            is_short,
             on_properties=lambda: self.__show_break_properties_dialog(
                 break_config,
                 is_short,
@@ -369,20 +370,29 @@ class SettingsDialog(Gtk.ApplicationWindow):
 class BreakItem(Gtk.Box):
     __gtype_name__ = "BreakItem"
 
+    # These are intentionally public - they are accessed by BreakSettingsDialog
+    break_config: dict
+    is_short: bool
+
+    # These are just public because the template needs them
     lbl_name: Gtk.Label = Gtk.Template.Child()
 
     def __init__(
         self,
-        break_name: str,
+        break_config: dict,
+        is_short: bool,
         on_properties: typing.Callable[[], None],
         on_delete: typing.Callable[[], None],
     ):
         super().__init__()
 
+        self.break_config = break_config
+        self.is_short = is_short
+
         self.on_properties = on_properties
         self.on_delete = on_delete
 
-        self.lbl_name.set_label(_(break_name))
+        self.lbl_name.set_label(_(break_config["name"]))
 
     def set_break_name(self, break_name: str) -> None:
         self.lbl_name.set_label(_(break_name))
