@@ -156,11 +156,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
                 ),
                 on_remove=lambda: parent_box.remove(box),
             ),
-            on_delete=lambda: self.__delete_break(
-                break_config,
-                is_short,
-                lambda: parent_box.remove(box),
-            ),
+            on_delete=self.__request_delete_break,
         )
 
         box.set_visible(True)
@@ -198,19 +194,13 @@ class SettingsDialog(Gtk.ApplicationWindow):
         while (child := widget.get_last_child()) is not None:
             widget.remove(child)
 
-    def __delete_break(
-        self, break_config: dict, is_short: bool, on_remove: typing.Callable[[], None]
-    ) -> None:
+    def __request_delete_break(self, break_item: "BreakItem") -> None:
         """Remove the break after a confirmation."""
 
         def __confirmation_dialog_response(dialog, result) -> None:
             response_id = dialog.choose_finish(result)
             if response_id == 1:
-                if is_short:
-                    self.config.get("short_breaks").remove(break_config)
-                else:
-                    self.config.get("long_breaks").remove(break_config)
-                on_remove()
+                self.__delete_break(break_item)
 
         messagedialog = Gtk.AlertDialog()
         messagedialog.set_modal(True)
@@ -222,6 +212,17 @@ class SettingsDialog(Gtk.ApplicationWindow):
         messagedialog.set_default_button(0)
 
         messagedialog.choose(self, None, __confirmation_dialog_response)
+
+    def __delete_break(
+        self,
+        break_item: "BreakItem",
+    ) -> None:
+        if break_item.is_short:
+            self.config.get("short_breaks").remove(break_item.break_config)
+            self.box_short_breaks.remove(break_item)
+        else:
+            self.config.get("long_breaks").remove(break_item.break_config)
+            self.box_long_breaks.remove(break_item)
 
     def __create_plugin_item(self, plugin_config: dict) -> "PluginItem":
         """Create an entry for plugin to be listed in the plugin tab."""
@@ -382,7 +383,7 @@ class BreakItem(Gtk.Box):
         break_config: dict,
         is_short: bool,
         on_properties: typing.Callable[[], None],
-        on_delete: typing.Callable[[], None],
+        on_delete: typing.Callable[["BreakItem"], None],
     ):
         super().__init__()
 
@@ -403,7 +404,7 @@ class BreakItem(Gtk.Box):
 
     @Gtk.Template.Callback()
     def on_delete_clicked(self, button) -> None:
-        self.on_delete()
+        self.on_delete(self)
 
 
 @Gtk.Template(filename=SETTINGS_PLUGIN_ITEM_GLADE)
