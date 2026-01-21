@@ -82,18 +82,23 @@ class SettingsDialog(Gtk.ApplicationWindow):
 
     plugin_items: dict[str, "PluginItem"]
     plugin_map: dict[str, str]
+    original_config: Config
     config: Config
+
+    on_save_settings: typing.Callable[[Config], None]
+    on_close: typing.Callable[[], None]
 
     def __init__(
         self,
         application: Gtk.Application,
         config: Config,
         on_save_settings: typing.Callable[[Config], None],
+        on_close: typing.Callable[[], None],
     ):
         super().__init__(application=application)
 
-        self.config = config
         self.on_save_settings = on_save_settings
+        self.on_close = on_close
         self.plugin_items = {}
         self.plugin_map = {}
 
@@ -102,6 +107,9 @@ class SettingsDialog(Gtk.ApplicationWindow):
 
     def __initialize(self, config: Config) -> None:
         self.initializing = True
+
+        self.original_config = config
+        self.config = config.clone()
 
         self.last_short_break_interval = config.get("short_break_interval")
 
@@ -160,13 +168,13 @@ class SettingsDialog(Gtk.ApplicationWindow):
         def __confirmation_dialog_response(dialog, result) -> None:
             response_id = dialog.choose_finish(result)
             if response_id == 1:
-                self.config = Config.reset_config()
+                new_config = Config.reset_config()
                 # Remove breaks from the container
                 self.__clear_children(self.box_short_breaks)
                 self.__clear_children(self.box_long_breaks)
                 self.__clear_children(self.box_plugins)
                 # Initialize again
-                self.__initialize(self.config)
+                self.__initialize(new_config)
 
         messagedialog = Gtk.AlertDialog()
         messagedialog.set_modal(True)
@@ -444,7 +452,11 @@ class SettingsDialog(Gtk.ApplicationWindow):
     @Gtk.Template.Callback()
     def on_window_delete(self, *args) -> None:
         """Event handler for Settings dialog close action."""
-        self.on_save_settings(self.config)  # Call the provided save method
+        if self.config != self.original_config:
+            self.on_save_settings(self.config)  # Call the provided save method
+
+        self.on_close()
+
         self.destroy()
 
 

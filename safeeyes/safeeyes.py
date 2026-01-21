@@ -358,7 +358,7 @@ class SafeEyes(Gtk.Application):
         if self._settings_dialog is None:
             logging.info("Show Settings dialog")
             self._settings_dialog = SettingsDialog(
-                self, self.config.clone(), self.save_settings
+                self, self.config, self.save_settings, self._on_settings_close
             )
 
         if activation_token is not None:
@@ -475,16 +475,13 @@ class SafeEyes(Gtk.Application):
         self.safe_eyes_core.postpone()
         self.plugins_manager.stop_break()
 
-    def save_settings(self, config):
+    def _on_settings_close(self) -> None:
+        self._settings_dialog = None
+
+    def save_settings(self, config: Config) -> None:
         """Listen to Settings dialog Save action and write to the config
         file.
         """
-        self._settings_dialog = None
-
-        if self.config == config:
-            # Config is not modified
-            return
-
         logging.info("Saving settings to safeeyes.json")
         # Stop the Safe Eyes core
         if self.active:
@@ -497,7 +494,7 @@ class SafeEyes(Gtk.Application):
 
         self.restart(config)
 
-    def restart(self, config, set_active=False):
+    def restart(self, config: Config, set_active=False):
         logging.info("Initialize SafeEyesCore with modified settings")
 
         # Restart the core and initialize the components
