@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import copy
 import math
 import os
 import typing
@@ -146,16 +147,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
         box: "BreakItem" = BreakItem(
             break_config,
             is_short,
-            on_properties=lambda: self.__show_break_properties_dialog(
-                break_config,
-                is_short,
-                self.config,
-                on_close=lambda cfg: box.set_break_name(cfg["name"]),
-                on_add=lambda is_short, break_config: self.__create_break_item(
-                    break_config, is_short
-                ),
-                on_remove=lambda: parent_box.remove(box),
-            ),
+            on_properties=self.__show_break_properties_dialog,
             on_delete=self.__request_delete_break,
         )
 
@@ -224,6 +216,35 @@ class SettingsDialog(Gtk.ApplicationWindow):
             self.config.get("long_breaks").remove(break_item.break_config)
             self.box_long_breaks.remove(break_item)
 
+    def __update_break(
+        self, break_item: "BreakItem", new_break_config: dict, new_is_short: bool
+    ) -> None:
+        old_is_short = break_item.is_short
+        break_item.is_short = new_is_short
+        old_break_config = break_item.break_config
+        break_item.break_config = new_break_config
+
+        if old_is_short and not new_is_short:
+            # Changed from short to long
+            self.config.get("short_breaks").remove(old_break_config)
+            self.config.get("long_breaks").append(new_break_config)
+            self.box_short_breaks.remove(break_item)
+            self.box_long_breaks.append(break_item)
+        elif not old_is_short and new_is_short:
+            # Changed from long to short
+            self.config.get("long_breaks").remove(old_break_config)
+            self.config.get("short_breaks").append(new_break_config)
+            self.box_long_breaks.remove(break_item)
+            self.box_short_breaks.append(break_item)
+        else:
+            break_list = self.config.get("long_breaks")
+            if new_is_short:
+                break_list = self.config.get("short_breaks")
+
+            break_list[break_list.index(old_break_config)] = new_break_config
+
+        break_item.update_break_name()
+
     def __create_plugin_item(self, plugin_config: dict) -> "PluginItem":
         """Create an entry for plugin to be listed in the plugin tab."""
         box = PluginItem(
@@ -244,25 +265,14 @@ class SettingsDialog(Gtk.ApplicationWindow):
         dialog = PluginSettingsDialog(self, plugin_config)
         dialog.show()
 
-    def __show_break_properties_dialog(
-        self,
-        break_config: dict,
-        is_short: bool,
-        parent: Config,
-        on_close: typing.Callable[[dict], None],
-        on_add: typing.Callable[[bool, dict], None],
-        on_remove: typing.Callable[[], None],
-    ) -> None:
+    def __show_break_properties_dialog(self, break_item: "BreakItem") -> None:
         """Show the BreakProperties dialog."""
         dialog = BreakSettingsDialog(
             self,
-            break_config,
-            is_short,
-            parent,
+            break_item,
+            self.config,
             self.plugin_map,
-            on_close,
-            on_add,
-            on_remove,
+            on_update_break=self.__update_break,
         )
         dialog.show()
 
@@ -382,7 +392,7 @@ class BreakItem(Gtk.Box):
         self,
         break_config: dict,
         is_short: bool,
-        on_properties: typing.Callable[[], None],
+        on_properties: typing.Callable[["BreakItem"], None],
         on_delete: typing.Callable[["BreakItem"], None],
     ):
         super().__init__()
@@ -393,14 +403,14 @@ class BreakItem(Gtk.Box):
         self.on_properties = on_properties
         self.on_delete = on_delete
 
-        self.lbl_name.set_label(_(break_config["name"]))
+        self.update_break_name()
 
-    def set_break_name(self, break_name: str) -> None:
-        self.lbl_name.set_label(_(break_name))
+    def update_break_name(self) -> None:
+        self.lbl_name.set_label(_(self.break_config["name"]))
 
     @Gtk.Template.Callback()
     def on_properties_clicked(self, button) -> None:
-        self.on_properties()
+        self.on_properties(self)
 
     @Gtk.Template.Callback()
     def on_delete_clicked(self, button) -> None:
@@ -590,26 +600,27 @@ class BreakSettingsDialog(Gtk.Window):
     grid_plugins: Gtk.Grid = Gtk.Template.Child()
     lst_break_types: Gtk.ComboBox = Gtk.Template.Child()
 
+    on_update_break: typing.Callable[["BreakItem", dict, bool], None]
+    break_item: "BreakItem"
+    new_break_config: dict
+
     def __init__(
         self,
         parent: Gtk.Window,
-        break_config: dict,
-        is_short: bool,
-        parent_config: Config,
+        break_item: "BreakItem",
+        parent_config: Config,  # this is read-only
         plugin_map: dict[str, str],
-        on_close: typing.Callable[[dict], None],
-        on_add: typing.Callable[[bool, dict], None],
-        on_remove: typing.Callable[[], None],
+        on_update_break: typing.Callable[["BreakItem", dict, bool], None],
     ):
         super().__init__(transient_for=parent)
 
-        self.break_config = break_config
-        self.parent_config = parent_config
+        self.break_item = break_item
         self.plugin_check_buttons = {}
-        self.on_close = on_close
-        self.is_short = is_short
-        self.on_add = on_add
-        self.on_remove = on_remove
+        self.on_update_break = on_update_break
+        self.new_break_config = copy.deepcopy(break_item.break_config)
+
+        break_config = break_item.break_config
+        is_short = break_item.is_short
 
         interval_overriden = break_config.get("interval", None) is not None
         duration_overriden = break_config.get("duration", None) is not None
@@ -652,9 +663,9 @@ class BreakSettingsDialog(Gtk.Window):
                 col += 1
                 row = 0
 
-        if "image" in self.break_config:
+        if "image" in break_config:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                self.break_config["image"], 16, 16, True
+                break_config["image"], 16, 16, True
             )
             image = Gtk.Image.new_from_pixbuf(pixbuf)
             self.btn_image.set_child(image)
@@ -713,14 +724,14 @@ class BreakSettingsDialog(Gtk.Window):
             pass
 
         if response is not None:
-            self.break_config["image"] = response.get_path()
+            self.new_break_config["image"] = response.get_path()
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                self.break_config["image"], 16, 16, True
+                self.new_break_config["image"], 16, 16, True
             )
             image = Gtk.Image.new_from_pixbuf(pixbuf)
             self.btn_image.set_child(image)
         else:
-            self.break_config.pop("image", None)
+            self.new_break_config.pop("image", None)
             self.btn_image.set_icon_name("gtk-missing-image")
 
     @Gtk.Template.Callback()
@@ -728,38 +739,26 @@ class BreakSettingsDialog(Gtk.Window):
         """Event handler for Properties dialog close action."""
         break_name = self.txt_break.get_text().strip()
         if break_name:
-            self.break_config["name"] = break_name
+            self.new_break_config["name"] = break_name
         if self.switch_override_interval.get_active():
-            self.break_config["interval"] = int(self.spin_interval.get_value())
+            self.new_break_config["interval"] = int(self.spin_interval.get_value())
         else:
-            self.break_config.pop("interval", None)
+            self.new_break_config.pop("interval", None)
         if self.switch_override_duration.get_active():
-            self.break_config["duration"] = int(self.spin_duration.get_value())
+            self.new_break_config["duration"] = int(self.spin_duration.get_value())
         else:
-            self.break_config.pop("duration", None)
+            self.new_break_config.pop("duration", None)
         if self.switch_override_plugins.get_active():
             selected_plugins = []
             for plugin_id in self.plugin_check_buttons:
                 if self.plugin_check_buttons[plugin_id].get_active():
                     selected_plugins.append(plugin_id)
-            self.break_config["plugins"] = selected_plugins
+            self.new_break_config["plugins"] = selected_plugins
         else:
-            self.break_config.pop("plugins", None)
+            self.new_break_config.pop("plugins", None)
 
-        if self.is_short and self.cmb_type.get_active() == 1:
-            # Changed from short to long
-            self.parent_config.get("short_breaks").remove(self.break_config)
-            self.parent_config.get("long_breaks").append(self.break_config)
-            self.on_remove()
-            self.on_add(not self.is_short, self.break_config)
-        elif not self.is_short and self.cmb_type.get_active() == 0:
-            # Changed from long to short
-            self.parent_config.get("long_breaks").remove(self.break_config)
-            self.parent_config.get("short_breaks").append(self.break_config)
-            self.on_remove()
-            self.on_add(not self.is_short, self.break_config)
-        else:
-            self.on_close(self.break_config)
+        new_is_short = self.cmb_type.get_active() == 0
+        self.on_update_break(self.break_item, self.new_break_config, new_is_short)
         self.destroy()
 
     def show(self) -> None:
