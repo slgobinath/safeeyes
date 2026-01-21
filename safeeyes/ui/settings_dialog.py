@@ -96,20 +96,15 @@ class SettingsDialog(Gtk.ApplicationWindow):
         self.on_save_settings = on_save_settings
         self.plugin_items = {}
         self.plugin_map = {}
-        self.last_short_break_interval = config.get("short_break_interval")
-        self.initializing = True
-        self.infobar_long_break_shown = False
-
-        self.info_bar_long_break.hide()
 
         # Set the current values of input fields
         self.__initialize(config)
 
-        self.initializing = False
-
     def __initialize(self, config: Config) -> None:
-        # Don't show infobar for changes made internally
-        self.infobar_long_break_shown = True
+        self.initializing = True
+
+        self.last_short_break_interval = config.get("short_break_interval")
+
         for short_break in config.get("short_breaks"):
             self.__create_break_item(short_break, True)
         for long_break in config.get("long_breaks"):
@@ -136,7 +131,11 @@ class SettingsDialog(Gtk.ApplicationWindow):
         self.switch_random_order.set_active(config.get("random_order"))
         self.switch_postpone.set_active(config.get("allow_postpone"))
         self.switch_persist.set_active(config.get("persist_state"))
+
+        self.info_bar_long_break.hide()
         self.infobar_long_break_shown = False
+
+        self.initializing = False
 
     def __create_break_item(self, break_config: dict, is_short: bool) -> None:
         """Create an entry for break to be listed in the break tab."""
@@ -258,6 +257,9 @@ class SettingsDialog(Gtk.ApplicationWindow):
         box = PluginItem(
             plugin_config,
             on_properties=lambda: self.__show_plugins_properties_dialog(plugin_config),
+            on_plugin_enabled_changed=lambda active: self._on_plugin_enabled_changed(
+                plugin_config["id"], active
+            ),
         )
 
         self.plugin_items[plugin_config["id"]] = box
@@ -267,6 +269,10 @@ class SettingsDialog(Gtk.ApplicationWindow):
 
         box.set_visible(True)
         return box
+
+    def _on_plugin_enabled_changed(self, plugin_id: str, active: bool) -> None:
+        index = self.__index_of_plugin(self.config.get("plugins"), plugin_id)
+        self.config.get("plugins")[index]["enabled"] = active
 
     def __on_update_plugin_config(self, plugin_id: str, new_settings: dict) -> None:
         index = self.__index_of_plugin(self.config.get("plugins"), plugin_id)
@@ -315,6 +321,28 @@ class SettingsDialog(Gtk.ApplicationWindow):
         self.spin_postpone_duration.set_sensitive(self.switch_postpone.get_active())
         self.dropdown_postpone_unit.set_sensitive(self.switch_postpone.get_active())
 
+        if not self.initializing:
+            self.config.set("allow_postpone", self.switch_postpone.get_active())
+
+    @Gtk.Template.Callback()
+    def on_dropdown_postpone_unit_selected_item(self, dropdown, _pspec) -> None:
+        if not self.initializing:
+            self.config.set(
+                "postpone_unit",
+                # the model is a GtkStringList - so get_selected_item will return a
+                # StringObject
+                typing.cast(
+                    Gtk.StringObject, self.dropdown_postpone_unit.get_selected_item()
+                ).get_string(),
+            )
+
+    @Gtk.Template.Callback()
+    def on_spin_postpone_duration_change(self, spin_button, *value) -> None:
+        if not self.initializing:
+            self.config.set(
+                "postpone_duration", self.spin_postpone_duration.get_value_as_int()
+            )
+
     @Gtk.Template.Callback()
     def on_spin_short_break_interval_change(self, spin_button, *value) -> None:
         """Event handler for value change of short break interval."""
@@ -333,6 +361,23 @@ class SettingsDialog(Gtk.ApplicationWindow):
             self.infobar_long_break_shown = True
             self.info_bar_long_break.show()
 
+        if not self.initializing:
+            self.config.set(
+                "short_break_interval",
+                self.spin_short_break_interval.get_value_as_int(),
+            )
+            self.config.set(
+                "long_break_interval", self.spin_long_break_interval.get_value_as_int()
+            )
+
+    @Gtk.Template.Callback()
+    def on_spin_short_break_duration_change(self, spin_button, *value) -> None:
+        if not self.initializing:
+            self.config.set(
+                "short_break_duration",
+                self.spin_short_break_duration.get_value_as_int(),
+            )
+
     @Gtk.Template.Callback()
     def on_spin_long_break_interval_change(self, spin_button, *value) -> None:
         """Event handler for value change of long break interval."""
@@ -340,10 +385,52 @@ class SettingsDialog(Gtk.ApplicationWindow):
             self.infobar_long_break_shown = True
             self.info_bar_long_break.show()
 
+        if not self.initializing:
+            self.config.set(
+                "long_break_interval", self.spin_long_break_interval.get_value_as_int()
+            )
+
+    @Gtk.Template.Callback()
+    def on_spin_long_break_duration_change(self, spin_button, *value) -> None:
+        if not self.initializing:
+            self.config.set(
+                "long_break_duration", self.spin_long_break_duration.get_value_as_int()
+            )
+
     @Gtk.Template.Callback()
     def on_info_bar_long_break_close(self, infobar, *user_data) -> None:
         """Event handler for info bar close action."""
         self.info_bar_long_break.hide()
+
+    @Gtk.Template.Callback()
+    def on_spin_time_to_prepare_change(self, spin_button, *value) -> None:
+        if not self.initializing:
+            self.config.set(
+                "pre_break_warning_time", self.spin_time_to_prepare.get_value_as_int()
+            )
+
+    @Gtk.Template.Callback()
+    def on_switch_random_order_activated(self, switch, _gparam) -> None:
+        if not self.initializing:
+            self.config.set("random_order", self.switch_random_order.get_active())
+
+    @Gtk.Template.Callback()
+    def on_switch_strict_break_activated(self, switch, _gparam) -> None:
+        if not self.initializing:
+            self.config.set("strict_break", self.switch_strict_break.get_active())
+
+    @Gtk.Template.Callback()
+    def on_spin_shortcut_disable_time_change(self, spin_button, *value) -> None:
+        if not self.initializing:
+            self.config.set(
+                "shortcut_disable_time",
+                self.spin_disable_keyboard_shortcut.get_value_as_int(),
+            )
+
+    @Gtk.Template.Callback()
+    def on_switch_persist_state_activated(self, switch, _gparam) -> None:
+        if not self.initializing:
+            self.config.set("persist_state", self.switch_persist.get_active())
 
     @Gtk.Template.Callback()
     def add_break(self, button) -> None:
@@ -357,44 +444,6 @@ class SettingsDialog(Gtk.ApplicationWindow):
     @Gtk.Template.Callback()
     def on_window_delete(self, *args) -> None:
         """Event handler for Settings dialog close action."""
-        self.config.set(
-            "short_break_duration", self.spin_short_break_duration.get_value_as_int()
-        )
-        self.config.set(
-            "long_break_duration", self.spin_long_break_duration.get_value_as_int()
-        )
-        self.config.set(
-            "short_break_interval", self.spin_short_break_interval.get_value_as_int()
-        )
-        self.config.set(
-            "long_break_interval", self.spin_long_break_interval.get_value_as_int()
-        )
-        self.config.set(
-            "pre_break_warning_time", self.spin_time_to_prepare.get_value_as_int()
-        )
-        self.config.set(
-            "postpone_duration", self.spin_postpone_duration.get_value_as_int()
-        )
-        self.config.set(
-            "postpone_unit",
-            # the model is a GtkStringList - so get_selected_item will return a
-            # StringObject
-            typing.cast(
-                Gtk.StringObject, self.dropdown_postpone_unit.get_selected_item()
-            ).get_string(),
-        )
-        self.config.set(
-            "shortcut_disable_time",
-            self.spin_disable_keyboard_shortcut.get_value_as_int(),
-        )
-        self.config.set("strict_break", self.switch_strict_break.get_active())
-        self.config.set("random_order", self.switch_random_order.get_active())
-        self.config.set("allow_postpone", self.switch_postpone.get_active())
-        self.config.set("persist_state", self.switch_persist.get_active())
-        for plugin in self.config.get("plugins"):
-            if plugin["id"] in self.plugin_items:
-                plugin["enabled"] = self.plugin_items[plugin["id"]].is_enabled()
-
         self.on_save_settings(self.config)  # Call the provided save method
         self.destroy()
 
@@ -450,11 +499,19 @@ class PluginItem(Gtk.Box):
     btn_disable_errored: Gtk.Button = Gtk.Template.Child()
     btn_plugin_extra_link: Gtk.LinkButton = Gtk.Template.Child()
     img_plugin_icon: Gtk.Image = Gtk.Template.Child()
+    on_properties: typing.Callable[[], None]
+    on_plugin_enabled_changed: typing.Callable[[bool], None]
 
-    def __init__(self, plugin_config: dict, on_properties: typing.Callable[[], None]):
+    def __init__(
+        self,
+        plugin_config: dict,
+        on_properties: typing.Callable[[], None],
+        on_plugin_enabled_changed: typing.Callable[[bool], None],
+    ):
         super().__init__()
 
         self.on_properties = on_properties
+        self.on_plugin_enabled_changed = on_plugin_enabled_changed
         self.plugin_config = plugin_config
 
         self.lbl_plugin_name.set_label(_(plugin_config["meta"]["name"]))
@@ -487,8 +544,9 @@ class PluginItem(Gtk.Box):
         if plugin_config["icon"]:
             self.img_plugin_icon.set_from_file(plugin_config["icon"])
 
-    def is_enabled(self) -> bool:
-        return self.switch_enable.get_active()
+    @Gtk.Template.Callback()
+    def on_switch_enable_activated(self, switch, _pspec) -> None:
+        self.on_plugin_enabled_changed(self.switch_enable.get_active())
 
     @Gtk.Template.Callback()
     def on_disable_errored(self, button) -> None:

@@ -188,6 +188,7 @@
                                             <property name="numeric">1</property>
                                             <property name="update-policy">if-valid</property>
                                             <property name="value">1</property>
+                                            <signal name="value-changed" handler="on_spin_short_break_duration_change" swapped="no"/>
                                           </object>
                                         </child>
                                       </object>
@@ -301,6 +302,7 @@
                                             <property name="numeric">1</property>
                                             <property name="update-policy">if-valid</property>
                                             <property name="value">1</property>
+                                            <signal name="value-changed" handler="on_spin_long_break_duration_change" swapped="no"/>
                                           </object>
                                         </child>
                                       </object>
@@ -352,6 +354,7 @@
                                             <property name="numeric">1</property>
                                             <property name="update-policy">if-valid</property>
                                             <property name="value">1</property>
+                                            <signal name="value-changed" handler="on_spin_time_to_prepare_change" swapped="no"/>
                                           </object>
                                         </child>
                                       </object>
@@ -374,6 +377,7 @@
                                             <property name="can-focus">1</property>
                                             <property name="halign">end</property>
                                             <property name="valign">center</property>
+                                            <signal name="notify::active" handler="on_switch_random_order_activated" swapped="no"/>
                                           </object>
                                         </child>
                                       </object>
@@ -396,6 +400,7 @@
                                             <property name="can-focus">1</property>
                                             <property name="halign">end</property>
                                             <property name="valign">center</property>
+                                            <signal name="notify::active" handler="on_switch_strict_break_activated" swapped="no"/>
                                           </object>
                                         </child>
                                       </object>
@@ -449,6 +454,7 @@
                                                 </items>
                                               </object>
                                             </property>
+                                            <signal name="notify::selected-item" handler="on_dropdown_postpone_unit_selected_item" swapped="no"/>
                                           </object>
                                         </child>
                                         <child>
@@ -465,6 +471,7 @@
                                             <property name="valign">center</property>
                                             <property name="value">1</property>
                                             <property name="visible">1</property>
+                                            <signal name="value-changed" handler="on_spin_postpone_duration_change" swapped="no"/>
                                           </object>
                                         </child>
                                       </object>
@@ -493,6 +500,7 @@
                                             <property name="numeric">1</property>
                                             <property name="update-policy">if-valid</property>
                                             <property name="value">1</property>
+                                            <signal name="value-changed" handler="on_spin_shortcut_disable_time_change" swapped="no"/>
                                           </object>
                                         </child>
                                       </object>
@@ -515,6 +523,7 @@
                                             <property name="can-focus">1</property>
                                             <property name="halign">end</property>
                                             <property name="valign">center</property>
+                                            <signal name="notify::active" handler="on_switch_persist_state_activated" swapped="no"/>
                                           </object>
                                         </child>
                                       </object>
