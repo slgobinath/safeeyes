@@ -24,7 +24,6 @@ import signal
 import sys
 
 from safeeyes import translations
-from safeeyes.model import Config
 from safeeyes.safeeyes import SafeEyes
 
 
@@ -34,9 +33,7 @@ def main() -> None:
 
     system_locale = translations.setup()
 
-    config = Config.load()
-
-    safe_eyes = SafeEyes(system_locale, config)
+    safe_eyes = SafeEyes(system_locale)
     safe_eyes.run(sys.argv)
 
 
