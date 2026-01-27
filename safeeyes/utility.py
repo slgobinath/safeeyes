@@ -415,29 +415,6 @@ def load_css_file(style_sheet_path, priority, required=True):
     Gtk.StyleContext.add_provider_for_display(display, css_provider, priority)
 
 
-def initialize_safeeyes():
-    """Create the config file in XDG_CONFIG_HOME(or
-    ~/.config)/safeeyes directory.
-    """
-    logging.info("Copy the config files to XDG_CONFIG_HOME(or ~/.config)/safeeyes")
-
-    # Remove the ~/.config/safeeyes/safeeyes.json file
-    delete(CONFIG_FILE_PATH)
-
-    if not os.path.isdir(CONFIG_DIRECTORY):
-        mkdir(CONFIG_DIRECTORY)
-
-    # Copy the safeeyes.json
-    shutil.copy2(SYSTEM_CONFIG_FILE_PATH, CONFIG_FILE_PATH)
-    os.chmod(CONFIG_FILE_PATH, 0o600)
-
-    # initialize_safeeyes gets called when the configuration file is not present, which
-    # happens just after installation or manual deletion of
-    # .config/safeeyes/safeeyes.json file. In these cases, we want to force the creation
-    # of a startup entry
-    create_startup_entry(force=True)
-
-
 def cleanup_old_user_stylesheet():
     # Create the XDG_CONFIG_HOME(or ~/.config)/safeeyes/style directory
     if not os.path.isdir(STYLE_SHEET_DIRECTORY):
@@ -472,52 +449,6 @@ def cleanup_old_user_stylesheet():
                 )
                 % {"old": OLD_STYLE_SHEET_PATH, "new": CUSTOM_STYLE_SHEET_PATH}
             )
-
-
-def create_startup_entry(force=False):
-    """Create start up entry."""
-    startup_dir_path = os.path.join(HOME_DIRECTORY, ".config/autostart")
-    startup_entry = os.path.join(
-        startup_dir_path, "io.github.slgobinath.SafeEyes.desktop"
-    )
-    # until Safe Eyes 2.1.5 the startup entry had another name
-    # https://github.com/slgobinath/safeeyes/commit/684d16265a48794bb3fd670da67283fe4e2f591b#diff-0863348c2143a4928518a4d3661f150ba86d042bf5320b462ea2e960c36ed275L398
-    obsolete_entry = os.path.join(startup_dir_path, "safeeyes.desktop")
-
-    create_link = False
-
-    if force:
-        # if force is True, just create the link
-        create_link = True
-    else:
-        # if force is False, we want to avoid creating the startup symlink if it was
-        # manually deleted by the user, we want to create it only if a broken one is
-        # found
-        if os.path.islink(startup_entry):
-            # if the link exists, check if it is broken
-            try:
-                os.stat(startup_entry)
-            except FileNotFoundError:
-                # a FileNotFoundError will get thrown if the startup symlink is broken
-                create_link = True
-
-        if os.path.islink(obsolete_entry):
-            # if a link with the old naming exists, delete it and create a new one
-            create_link = True
-            delete(obsolete_entry)
-
-    if create_link:
-        # Create the folder if not exist
-        mkdir(startup_dir_path)
-
-        # Remove existing files
-        delete(startup_entry)
-
-        # Create the new startup entry
-        try:
-            os.symlink(SYSTEM_DESKTOP_FILE, startup_entry)
-        except OSError:
-            logging.error("Failed to create startup entry at %s" % startup_entry)
 
 
 def initialize_platform():
@@ -587,19 +518,6 @@ def initialize_platform():
                 os.symlink(system_icon, local_icon)
             except OSError:
                 logging.error("Failed to create icon link at %s" % local_icon)
-
-
-def reset_config():
-    # Remove the ~/.config/safeeyes/safeeyes.json and safeeyes_style.css
-    delete(CONFIG_FILE_PATH)
-
-    # Copy the safeeyes.json and safeeyes_style.css
-    shutil.copy2(SYSTEM_CONFIG_FILE_PATH, CONFIG_FILE_PATH)
-
-    # Add write permission (e.g. if original file was stored in /nix/store)
-    os.chmod(CONFIG_FILE_PATH, 0o600)
-
-    create_startup_entry()
 
 
 def initialize_logging(debug):
