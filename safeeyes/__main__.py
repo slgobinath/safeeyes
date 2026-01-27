@@ -22,15 +22,26 @@ your eyes from eye strain.
 
 import signal
 import sys
+import typing
 
 from safeeyes import translations
 from safeeyes.model import Config
 from safeeyes.safeeyes import SafeEyes
 
+import gi
+
+gi.require_version("GLib", "2.0")
+from gi.repository import GLib
+
+safe_eyes: typing.Optional[SafeEyes] = None
+
 
 def main() -> None:
     """Start the Safe Eyes."""
-    signal.signal(signal.SIGINT, signal.SIG_DFL)  # Handle Ctrl + C
+    global safe_eyes
+
+    # Handle Ctrl + C
+    GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGINT, sigint_caught)
 
     system_locale = translations.setup()
 
@@ -38,6 +49,20 @@ def main() -> None:
 
     safe_eyes = SafeEyes(system_locale, config)
     safe_eyes.run(sys.argv)
+
+
+def sigint_caught() -> bool:
+    global safe_eyes
+
+    if safe_eyes is not None:
+        # Call quit after the handler has been removed
+        # This makes sure that a second Ctrl + C can just force quit
+        # in case quitting also hangs
+        GLib.idle_add(lambda: safe_eyes.quit())
+    else:
+        sys.exit(0)
+
+    return GLib.SOURCE_REMOVE
 
 
 if __name__ == "__main__":
