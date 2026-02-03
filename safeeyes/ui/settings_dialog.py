@@ -22,7 +22,8 @@ import typing
 
 import gi
 from safeeyes import utility
-from safeeyes.model import Config, PluginDependency
+from safeeyes.configuration import Config
+from safeeyes.model import PluginDependency
 from safeeyes.translations import translate as _
 
 gi.require_version("Gtk", "4.0")
@@ -171,8 +172,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
         def __confirmation_dialog_response(dialog, result) -> None:
             response_id = dialog.choose_finish(result)
             if response_id == 1:
-                utility.reset_config()
-                self.config = Config.load()
+                self.config = Config.reset_config()
                 # Remove breaks from the container
                 self.__clear_children(self.box_short_breaks)
                 self.__clear_children(self.box_long_breaks)
@@ -319,6 +319,14 @@ class SettingsDialog(Gtk.ApplicationWindow):
             ),
         )
         dialog.show()
+
+    @Gtk.Template.Callback()
+    def on_request_autostart_clicked(self, button: Gtk.Button) -> None:
+        self.config.request_autostart()
+
+    @Gtk.Template.Callback()
+    def on_disable_autostart_clicked(self, button: Gtk.Button) -> None:
+        self.config.disable_autostart()
 
     @Gtk.Template.Callback()
     def on_window_delete(self, *args) -> None:

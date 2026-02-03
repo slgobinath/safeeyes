@@ -571,3 +571,18 @@ msgstr ""
 #, python-format
 msgid "Please install one of the command-line tools: %s"
 msgstr ""
+
+msgid "Safe Eyes wants to run in the background."
+msgstr ""
+
+msgid "Startup"
+msgstr ""
+
+msgid "Automatically start on login"
+msgstr ""
+
+msgid "Request autostart"
+msgstr ""
+
+msgid "Disable autostart"
+msgstr ""
