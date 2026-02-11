@@ -1,0 +1,60 @@
+name: Update AUR Package
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (without v prefix, e.g., 1.5.2)'
+        required: false
+
+jobs:
+  aur-publish:
+    name: Publish to AUR
+    runs-on: ubuntu-latest
+    # Only run for stable releases (not pre-releases), or manual dispatch
+    if: github.event_name == 'workflow_dispatch' || !github.event.release.prerelease
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Use provided input if set, otherwise fall back to the PKGBUILD pkgver
+            if [ -n "${{ github.event.inputs.version }}" ]; then
+              VERSION="${{ github.event.inputs.version }}"
+            else
+              VERSION="$(sed -n 's/^pkgver=//p' AUR/PKGBUILD | tr -d '"')"
+            fi
+          else
+            # Extract version from release tag (remove 'v' prefix if present)
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Publishing version: $VERSION"
+
+      - name: Generate PKGBUILD
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          # Update pkgver in PKGBUILD
+          sed -e "s/^pkgver=.*/pkgver=${VERSION}/" \
+              AUR/PKGBUILD > PKGBUILD
+          
+          echo "Generated PKGBUILD:"
+          cat PKGBUILD
+
+      - name: Publish to AUR
+        uses: KSXGitHub/github-actions-deploy-aur@v3.0.1
+        with:
+          pkgname: typhoon
+          pkgbuild: ./PKGBUILD
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: "Update to version ${{ steps.version.outputs.version }}"
+          force_push: true
