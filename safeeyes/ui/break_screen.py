@@ -89,6 +89,9 @@ class BreakScreen:
                 )
             )
 
+        # TODO: shortcut_disable_time should be renamed
+        # it used to be just about keyboard shortcuts - now it also controls whether
+        # the buttons are locked
         self.shortcut_disable_time = config.get("shortcut_disable_time", 2)
         self.strict_break = config.get("strict_break", False)
 
@@ -108,18 +111,20 @@ class BreakScreen:
 
     def on_skip_clicked(self, button) -> None:
         """Skip button press event handler."""
-        self.skip_break()
+        if self.enable_shortcut:
+            self.skip_break()
 
     def on_postpone_clicked(self, button) -> None:
         """Postpone button press event handler."""
-        self.postpone_break()
+        if self.enable_shortcut:
+            self.postpone_break()
 
     def show_count_down(self, countdown: int, seconds: int) -> None:
         """Show/update the count down on all screens."""
         self.enable_shortcut = self.shortcut_disable_time <= seconds
         mins, secs = divmod(countdown, 60)
         timeformat = "{:02d}:{:02d}".format(mins, secs)
-        self.__update_count_down(timeformat)
+        self.__update_count_down(timeformat, self.enable_shortcut)
 
     def show_message(
         self, break_obj: Break, widget: str, tray_actions: list[TrayAction] = []
@@ -183,6 +188,7 @@ class BreakScreen:
                 self.on_postpone_clicked,
                 self.show_skip_button,
                 self.on_skip_clicked,
+                self.enable_shortcut,
             )
 
             if self.context.is_wayland:
@@ -225,10 +231,10 @@ class BreakScreen:
 
             i = i + 1
 
-    def __update_count_down(self, count: str) -> None:
+    def __update_count_down(self, count: str, enable_shortcut: bool) -> None:
         """Update the countdown on all break screens."""
         for window in self.windows:
-            window.set_count_down(count)
+            window.set_count_down(count, enable_shortcut)
 
     def __window_set_keep_above_x11(self, window: "BreakScreenWindow") -> None:
         """Use EWMH hints to keep window above and on all desktops."""
@@ -359,6 +365,8 @@ class BreakScreenWindow(Gtk.Window):
     box_buttons: Gtk.Box = Gtk.Template.Child()
     toolbar: Gtk.Box = Gtk.Template.Child()
 
+    button_widgets: list[Gtk.Button] = []
+
     def __init__(
         self,
         application: Gtk.Application,
@@ -371,6 +379,7 @@ class BreakScreenWindow(Gtk.Window):
         on_postpone: typing.Callable[[Gtk.Button], None],
         show_skip: bool,
         on_skip: typing.Callable[[Gtk.Button], None],
+        enable_shortcut: bool,
     ):
         super().__init__(application=application)
 
@@ -399,7 +408,9 @@ class BreakScreenWindow(Gtk.Window):
             btn_postpone.get_style_context().add_class("btn_postpone")
             btn_postpone.connect("clicked", on_postpone)
             btn_postpone.set_visible(True)
+            btn_postpone.set_sensitive(enable_shortcut)
             self.box_buttons.append(btn_postpone)
+            self.button_widgets.append(btn_postpone)
 
         if show_skip:
             # Add the skip button
@@ -407,7 +418,9 @@ class BreakScreenWindow(Gtk.Window):
             btn_skip.get_style_context().add_class("btn_skip")
             btn_skip.connect("clicked", on_skip)
             btn_skip.set_visible(True)
+            btn_skip.set_sensitive(enable_shortcut)
             self.box_buttons.append(btn_skip)
+            self.button_widgets.append(btn_skip)
 
         # Set values
         if image_path:
@@ -415,8 +428,11 @@ class BreakScreenWindow(Gtk.Window):
         self.lbl_message.set_label(message)
         self.lbl_widget.set_markup(widget)
 
-    def set_count_down(self, count: str) -> None:
+    def set_count_down(self, count: str, enable_shortcut: bool) -> None:
         self.lbl_count.set_text(count)
+
+        for button in self.button_widgets:
+            button.set_sensitive(enable_shortcut)
 
     def __tray_action(self, button, tray_action: TrayAction) -> None:
         """Tray action handler.
