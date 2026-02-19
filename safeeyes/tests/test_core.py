@@ -21,6 +21,7 @@ import gettext
 import pytest
 import typing
 
+from safeeyes import configuration
 from safeeyes import context
 from safeeyes import core
 from safeeyes import model
@@ -262,7 +263,7 @@ class TestSafeEyesCore:
 
     def test_start_empty(self, sequential_threading: SequentialThreadingFixture):
         ctx = self.get_context()
-        config = model.Config(
+        config = configuration.Config(
             user_config={
                 "short_breaks": [],
                 "long_breaks": [],
@@ -288,7 +289,7 @@ class TestSafeEyesCore:
 
     def test_start(self, sequential_threading: SequentialThreadingFixture):
         ctx = self.get_context()
-        config = model.Config(
+        config = configuration.Config(
             user_config={
                 "short_breaks": [
                     {"name": "break 1"},
@@ -346,7 +347,7 @@ class TestSafeEyesCore:
         pre_break_warning_time = 10  # seconds
         long_break_duration = 60  # seconds
         long_break_interval = 75  # minutes
-        config = model.Config(
+        config = configuration.Config(
             user_config={
                 "short_breaks": [
                     {"name": "break 1"},
@@ -471,7 +472,7 @@ class TestSafeEyesCore:
         pre_break_warning_time = 10  # seconds
         long_break_duration = 1800  # seconds = 30min
         long_break_interval = 100  # minutes
-        config = model.Config(
+        config = configuration.Config(
             user_config={
                 "short_breaks": [
                     {"name": "break 1"},
@@ -585,7 +586,7 @@ class TestSafeEyesCore:
         pre_break_warning_time = 10  # seconds
         long_break_duration = 60  # seconds
         long_break_interval = 75  # minutes
-        config = model.Config(
+        config = configuration.Config(
             user_config={
                 "short_breaks": [
                     {"name": "break 1"},
@@ -726,7 +727,7 @@ class TestSafeEyesCore:
         pre_break_warning_time = 10  # seconds
         long_break_duration = 60  # seconds
         long_break_interval = 75  # minutes
-        config = model.Config(
+        config = configuration.Config(
             user_config={
                 "short_breaks": [
                     {"name": "break 1"},
@@ -882,7 +883,7 @@ class TestSafeEyesCore:
         pre_break_warning_time = 10  # seconds
         long_break_duration = 60  # seconds
         long_break_interval = 75  # minutes
-        config = model.Config(
+        config = configuration.Config(
             user_config={
                 "short_breaks": [
                     {"name": "break 1"},

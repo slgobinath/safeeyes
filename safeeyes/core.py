@@ -22,12 +22,12 @@ import datetime
 import logging
 import typing
 
+from safeeyes.configuration import Config
 from safeeyes.model import Break
 from safeeyes.model import BreakType
 from safeeyes.model import BreakQueue
 from safeeyes.model import EventHook
 from safeeyes.model import State
-from safeeyes.model import Config
 
 from safeeyes.context import Context
 

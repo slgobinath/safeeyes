@@ -24,8 +24,9 @@ import typing
 
 import gi
 from safeeyes import utility
+from safeeyes.configuration import Config
 from safeeyes.context import Context
-from safeeyes.model import Break, Config, TrayAction
+from safeeyes.model import Break, TrayAction
 from safeeyes.translations import translate as _
 
 gi.require_version("Gtk", "4.0")
