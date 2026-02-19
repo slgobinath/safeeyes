@@ -378,6 +378,7 @@ class StatusNotifierItemService(DBusService):
     Menu = None
 
     last_activation_token: typing.Optional[str] = None
+    watcher_watcher_id: typing.Optional[int] = None
 
     def __init__(self, session_bus, menu_items):
         super().__init__(
@@ -391,10 +392,21 @@ class StatusNotifierItemService(DBusService):
         self._menu = DBusMenuService(session_bus, menu_items)
         self.Menu = self._menu.DBUS_SERVICE_PATH
 
-    def register(self):
+    def register(self) -> None:
         self._menu.register()
         super().register()
 
+        # when there already is a watcher, __register gets called instantly
+        # it also gets called again anytime the watcher disappears and reappears
+        self.watcher_watcher_id = Gio.bus_watch_name(
+            Gio.BusType.SESSION,
+            "org.kde.StatusNotifierWatcher",
+            Gio.BusNameWatcherFlags.NONE,
+            lambda *args: self.__register(),
+            None,
+        )
+
+    def __register(self) -> None:
         watcher = Gio.DBusProxy.new_sync(
             connection=self.bus,
             flags=Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES,
@@ -413,11 +425,14 @@ class StatusNotifierItemService(DBusService):
         # pretty generic name.
         # Note that libappindicator/ayatana also used this non-standard behaviour -
         # this must be pretty well supported then.
-        watcher.RegisterStatusNotifierItem("(s)", self.DBUS_SERVICE_PATH)
+        watcher.RegisterStatusNotifierItem("(s)", self.DBUS_SERVICE_PATH)  # type: ignore[attr-defined]
 
     def unregister(self):
         super().unregister()
         self._menu.unregister()
+
+        Gio.bus_unwatch_name(self.watcher_watcher_id)
+        self.watcher_watcher_id = None
 
     def set_items(self, items):
         self._menu.set_items(items)
