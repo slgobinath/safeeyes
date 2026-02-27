@@ -31,6 +31,7 @@ from safeeyes import context, utility
 from safeeyes.ui.about_dialog import AboutDialog
 from safeeyes.ui.break_screen import BreakScreen
 from safeeyes.ui.required_plugin_dialog import RequiredPluginDialog
+from safeeyes.configuration import Config
 from safeeyes.model import BreakType, State, RequiredPluginException
 from safeeyes.translations import translate as _
 from safeeyes.plugin_manager import PluginManager
@@ -53,17 +54,17 @@ class SafeEyes(Gtk.Application):
     safe_eyes_core: SafeEyesCore
     plugins_manager: PluginManager
     system_locale: gettext.NullTranslations
+    config: Config
 
     _settings_dialog: typing.Optional[SettingsDialog] = None
 
-    def __init__(self, system_locale: gettext.NullTranslations, config) -> None:
+    def __init__(self, system_locale: gettext.NullTranslations) -> None:
         super().__init__(
             application_id="io.github.slgobinath.SafeEyes",
             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE,
         )
 
         self.active = False
-        self.config = config
         self._status = ""
         self.system_locale = system_locale
 
@@ -226,6 +227,8 @@ class SafeEyes(Gtk.Application):
         Gtk.Application.do_startup(self)
 
         logging.info("Starting up Application")
+
+        self.config = Config.load()
 
         # Initialize the Safe Eyes Context
         if self.config.get("persist_state"):

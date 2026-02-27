@@ -20,7 +20,6 @@
 plugins.
 """
 
-import copy
 import logging
 import random
 from enum import Enum
@@ -28,14 +27,15 @@ from dataclasses import dataclass
 from typing import Optional, Union
 import typing
 
-from packaging.version import parse
-
 import gi
 
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk
 
 from safeeyes import utility
+
+# Config is an intentional reexport - it used to be located here
+from safeeyes.configuration import Config
 from safeeyes.translations import translate as _
 
 if typing.TYPE_CHECKING:
@@ -384,106 +384,6 @@ class EventHook:
             if not handler(*args, **keywargs):
                 return False
         return True
-
-
-class Config:
-    """The configuration of Safe Eyes."""
-
-    __user_config: dict[str, typing.Any]
-    __system_config: dict[str, typing.Any]
-
-    @classmethod
-    def load(cls) -> "Config":
-        # Read the config files
-        user_config = utility.load_json(utility.CONFIG_FILE_PATH)
-        system_config = utility.load_json(utility.SYSTEM_CONFIG_FILE_PATH)
-        # If there any breaking changes in long_breaks, short_breaks or any other keys,
-        # use the force_upgrade_keys list
-        force_upgrade_keys: list[str] = []
-        # force_upgrade_keys = ['long_breaks', 'short_breaks']
-
-        # if create_startup_entry finds a broken autostart symlink, it will repair
-        # it
-        utility.create_startup_entry(force=False)
-        if user_config is None:
-            utility.initialize_safeeyes()
-            user_config = copy.deepcopy(system_config)
-            cfg = cls(user_config, system_config)
-            cfg.save()
-            return cfg
-        else:
-            system_config_version = system_config["meta"]["config_version"]
-            meta_obj = user_config.get("meta", None)
-            if meta_obj is None:
-                # Corrupted user config
-                user_config = copy.deepcopy(system_config)
-            else:
-                user_config_version = str(meta_obj.get("config_version", "0.0.0"))
-                if parse(user_config_version) != parse(system_config_version):
-                    # Update the user config
-                    new_user_config = copy.deepcopy(system_config)
-                    cls.__merge_dictionary(
-                        user_config, new_user_config, force_upgrade_keys
-                    )
-                    user_config = new_user_config
-
-        utility.merge_plugins(user_config)
-
-        cfg = cls(user_config, system_config)
-        cfg.save()
-        return cfg
-
-    def __init__(
-        self,
-        user_config: dict[str, typing.Any],
-        system_config: dict[str, typing.Any],
-    ):
-        self.__user_config = user_config
-        self.__system_config = system_config
-
-    @classmethod
-    def __merge_dictionary(cls, old_dict, new_dict, force_upgrade_keys: list[str]):
-        """Merge the dictionaries."""
-        for key in new_dict:
-            if key == "meta" or key in force_upgrade_keys:
-                continue
-            if key in old_dict:
-                new_value = new_dict[key]
-                old_value = old_dict[key]
-                if type(new_value) is type(old_value):
-                    # Both properties have same type
-                    if isinstance(new_value, dict):
-                        cls.__merge_dictionary(old_value, new_value, force_upgrade_keys)
-                    else:
-                        new_dict[key] = old_value
-
-    def clone(self) -> "Config":
-        config = Config(
-            user_config=copy.deepcopy(self.__user_config),
-            system_config=self.__system_config,
-        )
-        return config
-
-    def save(self) -> None:
-        """Save the configuration to file."""
-        utility.write_json(utility.CONFIG_FILE_PATH, self.__user_config)
-
-    def get(self, key, default_value=None):
-        """Get the value."""
-        value = self.__user_config.get(key, default_value)
-        if value is None:
-            value = self.__system_config.get(key, None)
-        return value
-
-    def set(self, key, value):
-        """Set the value."""
-        self.__user_config[key] = value
-
-    def __eq__(self, config):
-        return self.__user_config == config.__user_config
-
-    def __ne__(self, config):
-        return self.__user_config != config.__user_config
 
 
 class TrayAction:

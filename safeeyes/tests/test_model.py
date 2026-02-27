@@ -21,7 +21,7 @@ import pytest
 import random
 import typing
 from unittest import mock
-from safeeyes import context, model
+from safeeyes import configuration, context, model
 
 
 class TestBreak:
@@ -62,7 +62,7 @@ class TestBreakQueue:
         )
 
     def test_create_empty(self) -> None:
-        config = model.Config(
+        config = configuration.Config(
             user_config={
                 "short_breaks": [],
                 "long_breaks": [],
@@ -89,7 +89,7 @@ class TestBreakQueue:
             model, "_", lambda message: "translated!: " + message, raising=False
         )
 
-        config = model.Config(
+        config = configuration.Config(
             user_config={
                 "short_breaks": [
                     {"name": "break 1"},
@@ -122,7 +122,7 @@ class TestBreakQueue:
             model, "_", lambda message: "translated!: " + message, raising=False
         )
 
-        config = model.Config(
+        config = configuration.Config(
             user_config={
                 "short_breaks": [],
                 "long_breaks": [
@@ -155,7 +155,7 @@ class TestBreakQueue:
             model, "_", lambda message: "translated!: " + message, raising=False
         )
 
-        config = model.Config(
+        config = configuration.Config(
             user_config={
                 "short_breaks": [
                     {"name": "break 1"},

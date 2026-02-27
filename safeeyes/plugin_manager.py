@@ -71,9 +71,9 @@ import sys
 import typing
 
 from safeeyes import utility
+from safeeyes.configuration import Config
 from safeeyes.context import Context
 from safeeyes.model import (
-    Config,
     Break,
     PluginDependency,
     RequiredPluginException,
