@@ -30,7 +30,9 @@ from safeeyes.model import Break, TrayAction
 from safeeyes.translations import translate as _
 
 gi.require_version("Gtk", "4.0")
+gi.require_version("GLib", "2.0")
 from gi.repository import Gdk
+from gi.repository import GLib
 from gi.repository import Gtk
 from gi.repository import GdkX11
 
@@ -67,6 +69,7 @@ class BreakScreen:
         self.windows = []
         self.show_skip_button = False
         self.show_postpone_button = False
+        self.break_screen_fade_duration = 0
 
         if not self.context.is_wayland:
             import Xlib.display
@@ -95,6 +98,7 @@ class BreakScreen:
         # the buttons are locked
         self.shortcut_disable_time = config.get("shortcut_disable_time", 2)
         self.strict_break = config.get("strict_break", False)
+        self.break_screen_fade_duration = config.get("break_screen_fade_duration", 0)
 
     def skip_break(self) -> None:
         """Skip the break from the break screen."""
@@ -190,6 +194,8 @@ class BreakScreen:
                 self.show_skip_button,
                 self.on_skip_clicked,
                 self.enable_shortcut,
+                self.break_screen_fade_duration,
+                self.context.desktop,
             )
 
             if self.context.is_wayland:
@@ -204,9 +210,8 @@ class BreakScreen:
 
             self.windows.append(window)
 
-            if self.context.desktop == "kde":
-                # Fix flickering screen in KDE by setting opacity to 1
-                window.set_opacity(0.9)
+            # Opacity is handled by BreakScreenWindow based on desktop and fade_duration
+            # No manual opacity setting here
 
             window.present()
 
@@ -381,10 +386,19 @@ class BreakScreenWindow(Gtk.Window):
         show_skip: bool,
         on_skip: typing.Callable[[Gtk.Button], None],
         enable_shortcut: bool,
+        fade_duration: int = 0,
+        desktop: typing.Optional[str] = None,
     ):
         super().__init__(application=application)
 
         self.on_close = on_close
+        self.fade_duration = fade_duration
+        self.fade_step = 0
+        self.fade_timeout_id = None
+
+        # Determine target opacity based on desktop
+        # KDE has flickering issues at full opacity, use 0.9
+        self.target_opacity = 0.9 if desktop == "kde" else 1.0
 
         for tray_action in tray_actions:
             # TODO: apparently, this would be better served with an icon theme
@@ -429,6 +443,15 @@ class BreakScreenWindow(Gtk.Window):
         self.lbl_message.set_label(message)
         self.lbl_widget.set_markup(widget)
 
+        # Handle opacity based on fade_duration
+        if fade_duration > 0:
+            # Start with opacity 0 and fade in to target_opacity
+            self.set_opacity(0.0)
+            self.__start_fade_in()
+        elif desktop == "kde":
+            # No fade, but set opacity to 0.9 for KDE to prevent flickering
+            self.set_opacity(0.9)
+
     def set_count_down(self, count: str, enable_shortcut: bool) -> None:
         self.lbl_count.set_text(count)
 
@@ -445,8 +468,53 @@ class BreakScreenWindow(Gtk.Window):
             tray_action.reset()
         tray_action.action()
 
+    def __start_fade_in(self) -> None:
+        """Start the fade-in animation."""
+        if self.fade_duration <= 0:
+            return
+
+        # Calculate the number of steps and increment per step
+        # Use 20ms interval for smooth animation
+        interval = 20  # milliseconds
+        total_steps = self.fade_duration / interval
+        opacity_increment = self.target_opacity / total_steps
+
+        self.fade_step = 0
+        self.opacity_increment = opacity_increment
+
+        # Start the animation
+        self.fade_timeout_id = GLib.timeout_add(
+            interval,
+            self.__fade_in_step
+        )
+
+    def __fade_in_step(self) -> bool:
+        """Callback for each step of the fade-in animation.
+
+        Returns False to stop the animation when done, True to continue.
+        """
+        current_opacity = self.get_opacity()
+        new_opacity = current_opacity + self.opacity_increment
+
+        # Check if we've reached or exceeded the target opacity
+        if new_opacity >= self.target_opacity:
+            self.set_opacity(self.target_opacity)
+            # Stop the animation
+            if self.fade_timeout_id is not None:
+                GLib.source_remove(self.fade_timeout_id)
+                self.fade_timeout_id = None
+            return False
+
+        self.set_opacity(new_opacity)
+        self.fade_step += 1
+        return True
+
     @Gtk.Template.Callback()
     def on_window_delete(self, *args) -> None:
         """Window close event handler."""
         logging.info("Closing the break screen")
+        # Cancel any ongoing fade animation
+        if self.fade_timeout_id is not None:
+            GLib.source_remove(self.fade_timeout_id)
+            self.fade_timeout_id = None
         self.on_close()
