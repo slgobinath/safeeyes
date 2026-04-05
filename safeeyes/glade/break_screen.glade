@@ -27,7 +27,7 @@
     <signal name="close-request" handler="on_window_delete" swapped="no"/>
     <child>
       <object class="GtkGrid" id="grid1">
-        <property name="row_homogeneous">1</property>
+        <property name="row_homogeneous">0</property>
         <property name="column_homogeneous">1</property>
         <child>
           <object class="GtkBox" id="box_center_parent">
@@ -39,7 +39,7 @@
                 <property name="valign">center</property>
                 <property name="row_spacing">10</property>
                 <child>
-                  <object class="GtkImage" id="img_break">
+                  <object class="GtkPicture" id="img_break">
                     <layout>
                       <property name="column">0</property>
                       <property name="row">0</property>

@@ -98,6 +98,7 @@ ENV/
 
 # Visual Studio Code settings
 .vscode/
+.codex
 
 safeeyes/config/locale/*/LC_MESSAGES/safeeyes.po~
 

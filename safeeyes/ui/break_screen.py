@@ -31,6 +31,7 @@ from safeeyes.translations import translate as _
 
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gdk
+from gi.repository import GdkPixbuf
 from gi.repository import Gtk
 from gi.repository import GdkX11
 
@@ -178,11 +179,14 @@ class BreakScreen:
         i = 0
 
         for monitor in monitors:
+            monitor_geometry = monitor.get_geometry()
             window = BreakScreenWindow(
                 self.application,
                 message,
                 image_path,
                 widget,
+                monitor_geometry.width,
+                monitor_geometry.height,
                 tray_actions,
                 lambda: self.close(),
                 self.show_postpone_button,
@@ -362,7 +366,7 @@ class BreakScreenWindow(Gtk.Window):
     lbl_message: Gtk.Label = Gtk.Template.Child()
     lbl_count: Gtk.Label = Gtk.Template.Child()
     lbl_widget: Gtk.Label = Gtk.Template.Child()
-    img_break: Gtk.Image = Gtk.Template.Child()
+    img_break: Gtk.Picture = Gtk.Template.Child()
     box_buttons: Gtk.Box = Gtk.Template.Child()
     toolbar: Gtk.Box = Gtk.Template.Child()
 
@@ -374,6 +378,8 @@ class BreakScreenWindow(Gtk.Window):
         message: str,
         image_path: typing.Optional[str],
         widget: str,
+        monitor_width: int,
+        monitor_height: int,
         tray_actions: list[TrayAction],
         on_close: typing.Callable[[], None],
         show_postpone: bool,
@@ -385,6 +391,7 @@ class BreakScreenWindow(Gtk.Window):
         super().__init__(application=application)
 
         self.on_close = on_close
+        self.img_break.set_content_fit(Gtk.ContentFit.SCALE_DOWN)
 
         for tray_action in tray_actions:
             # TODO: apparently, this would be better served with an icon theme
@@ -425,7 +432,7 @@ class BreakScreenWindow(Gtk.Window):
 
         # Set values
         if image_path:
-            self.img_break.set_from_file(image_path)
+            self.__set_break_image(image_path, monitor_width, monitor_height)
         self.lbl_message.set_label(message)
         self.lbl_widget.set_markup(widget)
 
@@ -444,6 +451,31 @@ class BreakScreenWindow(Gtk.Window):
         if tray_action.single_use:
             tray_action.reset()
         tray_action.action()
+
+    def __set_break_image(
+        self, image_path: str, monitor_width: int, monitor_height: int
+    ) -> None:
+        """Load the break image and cap it relative to the current monitor size."""
+        max_width = max(1, (monitor_width * 8) // 10 - 1)
+        max_height = max(1, (monitor_height * 3) // 10 - 1)
+
+        try:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(image_path)
+        except Exception:
+            logging.exception("Failed to load break image: %s", image_path)
+            return
+
+        width = pixbuf.get_width()
+        height = pixbuf.get_height()
+        scale = min(1, max_width / width, max_height / height)
+        if scale < 1:
+            pixbuf = pixbuf.scale_simple(
+                max(1, int(width * scale)),
+                max(1, int(height * scale)),
+                GdkPixbuf.InterpType.BILINEAR,
+            ) or pixbuf
+
+        self.img_break.set_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
 
     @Gtk.Template.Callback()
     def on_window_delete(self, *args) -> None:
