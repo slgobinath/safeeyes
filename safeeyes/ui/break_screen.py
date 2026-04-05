@@ -460,20 +460,25 @@ class BreakScreenWindow(Gtk.Window):
         max_height = max(1, (monitor_height * 3) // 10 - 1)
 
         try:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(image_path)
+            loaded = GdkPixbuf.Pixbuf.new_from_file(image_path)
+            if loaded is None:
+                raise ValueError("Failed to load break image")
         except Exception:
             logging.exception("Failed to load break image: %s", image_path)
             return
+        pixbuf: GdkPixbuf.Pixbuf = loaded
 
-        width = pixbuf.get_width()
-        height = pixbuf.get_height()
+        width, height = pixbuf.get_width(), pixbuf.get_height()
         scale = min(1, max_width / width, max_height / height)
         if scale < 1:
-            pixbuf = pixbuf.scale_simple(
-                max(1, int(width * scale)),
-                max(1, int(height * scale)),
-                GdkPixbuf.InterpType.BILINEAR,
-            ) or pixbuf
+            pixbuf = (
+                pixbuf.scale_simple(
+                    max(1, int(width * scale)),
+                    max(1, int(height * scale)),
+                    GdkPixbuf.InterpType.BILINEAR,
+                )
+                or pixbuf
+            )
 
         self.img_break.set_paintable(Gdk.Texture.new_for_pixbuf(pixbuf))
 
