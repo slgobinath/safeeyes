@@ -196,6 +196,7 @@ This method has the same caveats about icons/window icons as running from source
 - Customizable user interface
 - Command-line arguments to control the running instance
 - Customizable using plug-ins
+- Compatible with mobile-centric environments such as Phosh and Plasma Moblie
 
 ## Third-party Plugins
 

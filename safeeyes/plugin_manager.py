@@ -28,6 +28,8 @@ The plugin.py can have following lifecycle methods but all are optional:
  - init(context, safeeyes_config, plugin_config)
     Initialize the plugin. Will be called after loading and after every changes in
     configuration
+ - on_activate()
+    Executes when an already-running Safe Eyes instance is activated again
  - on_start()
     Executes when Safe Eyes is enabled
  - on_stop()
@@ -185,6 +187,11 @@ class PluginManager:
         for plugin in self.__plugins.values():
             plugin.call_plugin_method("on_start")
 
+    def activate(self) -> None:
+        """Execute the on_activate() function of plugins."""
+        for plugin in self.__plugins.values():
+            plugin.call_plugin_method("on_activate")
+
     def stop(self) -> None:
         """Execute the on_stop() function of plugins."""
         for plugin in self.__plugins.values():
@@ -293,11 +300,12 @@ class LoadedPlugin:
 
     def __init__(self, plugin: dict) -> None:
         (plugin_config, plugin_dir) = self._load_config_json(plugin["id"])
+        state = utility.resolve_plugin_state(plugin, plugin_config)
 
         self.id = plugin["id"]
         self.plugin_config = plugin_config
         self.plugin_dir = plugin_dir
-        self.enabled = plugin["enabled"]
+        self.enabled = state["enabled"]
         self.break_override_allowed = plugin_config.get("break_override_allowed", False)
         self.required_plugin = plugin_config.get("required_plugin", False)
 
@@ -324,11 +332,13 @@ class LoadedPlugin:
             self._import_plugin()
 
     def reload_config(self, plugin: dict) -> None:
-        if not plugin["enabled"]:
+        state = utility.resolve_plugin_state(plugin, self.plugin_config)
+
+        if not state["enabled"]:
             self.disable()
             return
 
-        if not self.enabled and plugin["enabled"]:
+        if not self.enabled and state["enabled"]:
             self.enabled = True
 
         # Update the config

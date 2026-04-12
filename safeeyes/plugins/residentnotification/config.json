@@ -1,0 +1,22 @@
+{
+    "meta": {
+        "name": "Resident Notification",
+        "description": "Show the next break time in a resident notification",
+        "version": "0.0.1"
+    },
+    "dependencies": {
+        "python_modules": [],
+        "shell_commands": [],
+        "operating_systems": [],
+        "desktop_environments": [],
+        "resources": []
+    },
+    "environment_overrides": [
+        {
+            "environments": ["phosh", "plasma-mobile", "sxmo"],
+            "enabled": true,
+            "locked": true
+        }
+    ],
+    "settings": []
+}

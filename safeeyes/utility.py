@@ -258,18 +258,23 @@ def load_plugins_config(safeeyes_config):
         config = load_json(plugin_config_path)
         if config is None:
             continue
-        dependency_description = check_plugin_dependencies(
-            plugin["id"], config, plugin.get("settings", {}), plugin_path
-        )
-        if dependency_description:
-            config["error"] = True
-            config["meta"]["dependency_description"] = dependency_description
-            icon = get_resource_path("ic_warning.png")
+        state = resolve_plugin_state(plugin, config)
+        if state["enabled"] or config.get("break_override_allowed", False):
+            dependency_description = check_plugin_dependencies(
+                plugin["id"], config, plugin.get("settings", {}), plugin_path
+            )
+            if dependency_description:
+                config["error"] = True
+                config["meta"]["dependency_description"] = dependency_description
+                icon = get_resource_path("ic_warning.png")
+            else:
+                config["error"] = False
         else:
             config["error"] = False
         config["id"] = plugin["id"]
         config["icon"] = icon
-        config["enabled"] = plugin["enabled"]
+        config["enabled"] = state["enabled"]
+        config["locked"] = state["locked"]
         config["active_plugin_config"] = plugin.get("settings")
 
         configs.append(config)
@@ -302,12 +307,27 @@ def desktop_environment():
             "trinity",
             "kde",
             "hyprland",
+            "phosh",
+            "plasma-mobile",
+            "sxmo",
         ]:
             env = desktop_session
         elif desktop_session.startswith("xubuntu") or (
             current_desktop is not None and "xfce" in current_desktop
         ):
             env = "xfce"
+        elif "phosh" in desktop_session or (
+            current_desktop is not None and "phosh" in current_desktop.lower()
+        ):
+            env = "phosh"
+        elif "plasma-mobile" in desktop_session or (
+            "plasma-mobile" in (os.environ.get("XDG_SESSION_DESKTOP") or "").lower()
+        ):
+            env = "plasma-mobile"
+        elif "sxmo" in desktop_session or any(
+            key.startswith("SXMO_") for key in os.environ
+        ):
+            env = "sxmo"
         elif desktop_session.startswith("lubuntu"):
             env = "lxde"
         elif (
@@ -323,10 +343,85 @@ def desktop_environment():
         elif desktop_session.startswith("ubuntu"):
             env = "unity"
     elif current_desktop is not None:
-        if current_desktop.startswith("sway"):
+        current_desktop = current_desktop.lower()
+        if "phosh" in current_desktop:
+            env = "phosh"
+        elif "plasma-mobile" in current_desktop:
+            env = "plasma-mobile"
+        elif "sxmo" in current_desktop or any(
+            key.startswith("SXMO_") for key in os.environ
+        ):
+            env = "sxmo"
+        elif current_desktop.startswith("sway"):
             env = "sway"
     DESKTOP_ENVIRONMENT = env
     return env
+
+
+def normalize_environment_name(name: typing.Optional[str]) -> str:
+    if not name:
+        return ""
+
+    return re.sub(r"[^a-z0-9]+", "-", name.strip().lower()).strip("-")
+
+
+def session_environment_names() -> set[str]:
+    names = set()
+    values = []
+
+    for variable in [
+        "DESKTOP_SESSION",
+        "XDG_CURRENT_DESKTOP",
+        "XDG_SESSION_DESKTOP",
+        "GDMSESSION",
+    ]:
+        value = os.environ.get(variable)
+        if value:
+            values.extend(re.split(r"[:;]", value))
+            values.append(value)
+
+    desktop = desktop_environment()
+    if desktop != "unknown":
+        values.append(desktop)
+
+    if any(key.startswith("SXMO_") for key in os.environ):
+        values.append("sxmo")
+
+    for value in values:
+        normalized = normalize_environment_name(value)
+        if normalized:
+            names.add(normalized)
+
+    return names
+
+
+def plugin_matches_environment(override: dict) -> bool:
+    requested = {
+        normalize_environment_name(environment)
+        for environment in override.get("environments", [])
+    }
+    requested.discard("")
+    if not requested:
+        return False
+
+    return not requested.isdisjoint(session_environment_names())
+
+
+def resolve_plugin_state(plugin: dict, plugin_config: dict) -> dict[str, bool]:
+    enabled = plugin["enabled"]
+    locked = False
+
+    for override in plugin_config.get("environment_overrides", []):
+        if not plugin_matches_environment(override):
+            continue
+
+        enabled = override.get("enabled", enabled)
+        locked = override.get("locked", locked)
+
+    return {
+        "enabled": enabled,
+        "locked": locked,
+    }
 
 
 def is_wayland():

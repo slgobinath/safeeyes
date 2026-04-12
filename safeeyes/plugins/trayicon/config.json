@@ -11,6 +11,13 @@
         "desktop_environments": [],
         "resources": []
     },
+    "environment_overrides": [
+        {
+            "environments": ["phosh", "plasma-mobile", "sxmo"],
+            "enabled": false,
+            "locked": true
+        }
+    ],
     "required_plugin": true,
     "settings": [
         {

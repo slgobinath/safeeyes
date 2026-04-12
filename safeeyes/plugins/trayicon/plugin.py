@@ -25,6 +25,7 @@ from gi.repository import Gio, GLib
 import logging
 from safeeyes import utility
 from safeeyes.context import Context
+from safeeyes.plugins.trayicon.menu import build_menu_items
 from safeeyes.translations import translate as _
 import typing
 
@@ -514,163 +515,15 @@ class TrayIcon:
         self._session_bus.close_sync()
 
     def get_items(self):
-        breaks_found = self.has_breaks()
-
-        info_message = _("No Breaks Available")
-
-        if breaks_found:
-            if self.active:
-                next_break = self.get_next_break_time()
-
-                if next_break is not None:
-                    (next_time, next_long_time, next_is_long) = next_break
-
-                    if next_long_time:
-                        if next_is_long:
-                            info_message = _("Next long break at %s") % (next_long_time)
-                        else:
-                            info_message = _("Next breaks at %(short)s/%(long)s") % {
-                                "short": next_time,
-                                "long": next_long_time,
-                            }
-                    else:
-                        info_message = _("Next break at %s") % (next_time)
-            else:
-                if self.wakeup_time:
-                    info_message = _("Disabled until %s") % utility.format_time(
-                        self.wakeup_time
-                    )
-                else:
-                    info_message = _("Disabled until restart")
-
-        disable_items = []
-
-        if self.allow_disabling:
-            disable_option_dynamic_id = 13
-
-            for disable_option in self.plugin_config["disable_options"]:
-                time_in_minutes = time_in_x = disable_option["time"]
-
-                # Validate time value
-                if not isinstance(time_in_minutes, int) or time_in_minutes <= 0:
-                    logging.error(
-                        "Invalid time in disable option: " + str(time_in_minutes)
-                    )
-                    continue
-                time_unit = disable_option["unit"].lower()
-                if time_unit == "seconds" or time_unit == "second":
-                    time_in_minutes = int(time_in_minutes / 60)
-                    label = self.context["locale"].ngettext(
-                        "For %(num)d Second", "For %(num)d Seconds", time_in_x
-                    ) % {"num": time_in_x}
-                elif time_unit == "minutes" or time_unit == "minute":
-                    time_in_minutes = int(time_in_minutes * 1)
-                    label = self.context["locale"].ngettext(
-                        "For %(num)d Minute", "For %(num)d Minutes", time_in_x
-                    ) % {"num": time_in_x}
-                elif time_unit == "hours" or time_unit == "hour":
-                    time_in_minutes = int(time_in_minutes * 60)
-                    label = self.context["locale"].ngettext(
-                        "For %(num)d Hour", "For %(num)d Hours", time_in_x
-                    ) % {"num": time_in_x}
-                else:
-                    # Invalid unit
-                    logging.error(
-                        "Invalid unit in disable option: " + str(disable_option)
-                    )
-                    continue
-
-                ttw = time_in_minutes
-                disable_items.append(
-                    {
-                        "id": disable_option_dynamic_id,
-                        "label": label,
-                        "callback": lambda ttw=ttw: self.on_disable_clicked(ttw),
-                    }
-                )
-
-                disable_option_dynamic_id += 1
-
-            disable_items.append(
-                {
-                    "id": 12,
-                    "label": _("Until restart"),
-                    "callback": lambda: self.on_disable_clicked(-1),
-                }
-            )
-
-        return [
-            {
-                "id": 1,
-                "label": info_message,
-                "icon-name": "io.github.slgobinath.SafeEyes-timer",
-                "enabled": breaks_found and self.active,
-            },
-            {
-                "id": 2,
-                "type": "separator",
-            },
-            {
-                "id": 3,
-                "label": _("Enable Safe Eyes"),
-                "enabled": breaks_found and not self.active,
-                "callback": self.on_enable_clicked,
-                "hidden": not self.allow_disabling,
-            },
-            {
-                "id": 4,
-                "label": _("Disable Safe Eyes"),
-                "enabled": breaks_found and self.active and not self.menu_locked,
-                "children-display": "submenu",
-                "children": disable_items,
-                "hidden": not self.allow_disabling,
-            },
-            {
-                "id": 5,
-                "label": _("Take a break now"),
-                "enabled": breaks_found and self.active and not self.menu_locked,
-                "children-display": "submenu",
-                "children": [
-                    {
-                        "id": 9,
-                        "label": _("Any break"),
-                        "callback": lambda: self.on_manual_break_clicked(None),
-                    },
-                    {
-                        "id": 10,
-                        "label": _("Short break"),
-                        "callback": lambda: self.on_manual_break_clicked(
-                            BreakType.SHORT_BREAK
-                        ),
-                    },
-                    {
-                        "id": 11,
-                        "label": _("Long break"),
-                        "callback": lambda: self.on_manual_break_clicked(
-                            BreakType.LONG_BREAK
-                        ),
-                    },
-                ],
-            },
-            {
-                "id": 6,
-                "label": _("Settings"),
-                "enabled": not self.menu_locked,
-                "callback": self.show_settings,
-            },
-            {
-                "id": 7,
-                "label": _("About"),
-                "callback": self.show_about,
-            },
-            {
-                "id": 8,
-                "label": _("Quit"),
-                "enabled": not self.menu_locked,
-                "callback": self.quit_safe_eyes,
-                "hidden": not self.allow_disabling,
-            },
-        ]
+        return build_menu_items(
+            self.context,
+            self.plugin_config,
+            self,
+            active=self.active,
+            wakeup_time=self.wakeup_time,
+            menu_locked=self.menu_locked,
+            next_break=self.get_next_break_time(),
+        )
 
     def update_menu(self):
         self.sni_service.set_items(self.get_items())

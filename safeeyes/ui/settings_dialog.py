@@ -358,7 +358,10 @@ class SettingsDialog(Gtk.ApplicationWindow):
         self.config.set("allow_postpone", self.switch_postpone.get_active())
         self.config.set("persist_state", self.switch_persist.get_active())
         for plugin in self.config.get("plugins"):
-            if plugin["id"] in self.plugin_items:
+            if (
+                plugin["id"] in self.plugin_items
+                and not self.plugin_items[plugin["id"]].is_locked()
+            ):
                 plugin["enabled"] = self.plugin_items[plugin["id"]].is_enabled()
 
         self.on_save_settings(self.config)  # Call the provided save method
@@ -413,6 +416,7 @@ class PluginItem(Gtk.Box):
 
         self.on_properties = on_properties
         self.plugin_config = plugin_config
+        self.locked = plugin_config.get("locked", False)
 
         self.lbl_plugin_name.set_label(_(plugin_config["meta"]["name"]))
         self.switch_enable.set_active(plugin_config["enabled"])
@@ -433,19 +437,25 @@ class PluginItem(Gtk.Box):
             if plugin_config["enabled"]:
                 self.btn_disable_errored.set_visible(True)
         else:
-            self.lbl_plugin_description.set_label(
-                _(plugin_config["meta"]["description"])
-            )
-            if plugin_config["settings"]:
+            description = _(plugin_config["meta"]["description"])
+            if self.locked:
+                description += " " + _("Managed automatically for this desktop env.")
+            self.lbl_plugin_description.set_label(description)
+            if plugin_config["settings"] and not self.locked:
                 self.btn_properties.set_sensitive(True)
             else:
                 self.btn_properties.set_sensitive(False)
+            if self.locked:
+                self.switch_enable.set_sensitive(False)
 
         if plugin_config["icon"]:
             self.img_plugin_icon.set_from_file(plugin_config["icon"])
 
     def is_enabled(self) -> bool:
         return self.switch_enable.get_active()
+
+    def is_locked(self) -> bool:
+        return self.locked
 
     @Gtk.Template.Callback()
     def on_disable_errored(self, button) -> None:

@@ -570,3 +570,6 @@ msgstr ""
 
 msgid "Skipping/postponing disabled period (in seconds)"
 msgstr ""
+
+msgid "Managed automatically for this desktop env."
+msgstr ""

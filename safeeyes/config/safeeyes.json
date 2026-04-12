@@ -62,6 +62,11 @@
             "version": "0.0.1"
         },
         {
+            "id": "residentnotification",
+            "enabled": false,
+            "version": "0.0.1"
+        },
+        {
             "id": "audiblealert",
             "enabled": true,
             "version": "0.0.3",

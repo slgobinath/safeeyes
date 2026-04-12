@@ -180,6 +180,7 @@ class SafeEyes(Gtk.Application):
                 return 0
 
             logging.info("Safe Eyes is already running")
+            self.activate()
             return 0  # TODO: return error code here?
 
         else:
@@ -279,6 +280,8 @@ class SafeEyes(Gtk.Application):
 
     def do_activate(self):
         logging.info("Application activated")
+
+        self.plugins_manager.activate()
 
         if self.plugins_manager.needs_retry():
             GLib.timeout_add_seconds(1, self._retry_errored_plugins)
