@@ -76,6 +76,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
     switch_strict_break: Gtk.Switch = Gtk.Template.Child()
     switch_random_order: Gtk.Switch = Gtk.Template.Child()
     switch_postpone: Gtk.Switch = Gtk.Template.Child()
+    switch_show_clock: Gtk.Switch = Gtk.Template.Child()
     switch_persist: Gtk.Switch = Gtk.Template.Child()
     info_bar_long_break: Gtk.InfoBar = Gtk.Template.Child()
 
@@ -134,6 +135,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
         self.switch_strict_break.set_active(config.get("strict_break"))
         self.switch_random_order.set_active(config.get("random_order"))
         self.switch_postpone.set_active(config.get("allow_postpone"))
+        self.switch_show_clock.set_active(config.get("show_clock", True))
         self.switch_persist.set_active(config.get("persist_state"))
         self.infobar_long_break_shown = False
 
@@ -356,6 +358,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
         self.config.set("strict_break", self.switch_strict_break.get_active())
         self.config.set("random_order", self.switch_random_order.get_active())
         self.config.set("allow_postpone", self.switch_postpone.get_active())
+        self.config.set("show_clock", self.switch_show_clock.get_active())
         self.config.set("persist_state", self.switch_persist.get_active())
         for plugin in self.config.get("plugins"):
             if plugin["id"] in self.plugin_items:

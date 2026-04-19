@@ -492,6 +492,28 @@
                                   </object>
                                 </child>
                                 <child>
+                                  <object class="GtkBox" id="box_show_clock">
+                                    <property name="visible">1</property>
+                                    <property name="spacing">5</property>
+                                    <property name="homogeneous">1</property>
+                                    <child>
+                                      <object class="GtkLabel" id="lbl_show_clock">
+                                        <property name="visible">1</property>
+                                        <property name="halign">start</property>
+                                        <property name="label" translatable="yes">Show clock on the break screen</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSwitch" id="switch_show_clock">
+                                        <property name="visible">1</property>
+                                        <property name="can-focus">1</property>
+                                        <property name="halign">end</property>
+                                        <property name="valign">center</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
                                   <object class="GtkBox" id="box1">
                                     <property name="visible">1</property>
                                     <property name="spacing">5</property>

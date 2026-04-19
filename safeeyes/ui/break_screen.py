@@ -19,8 +19,10 @@
 
 import logging
 import os
+import math
 import time
 import typing
+from datetime import datetime
 
 import gi
 from safeeyes import utility
@@ -65,6 +67,7 @@ class BreakScreen:
         self.on_skipped = on_skipped
         self.shortcut_disable_time = 2
         self.strict_break = False
+        self.show_clock = True
         self.windows = []
         self.show_skip_button = False
         self.show_postpone_button = False
@@ -96,6 +99,7 @@ class BreakScreen:
         # the buttons are locked
         self.shortcut_disable_time = config.get("shortcut_disable_time", 2)
         self.strict_break = config.get("strict_break", False)
+        self.show_clock = config.get("show_clock", True)
 
     def skip_break(self) -> None:
         """Skip the break from the break screen."""
@@ -194,6 +198,7 @@ class BreakScreen:
                 self.show_skip_button,
                 self.on_skip_clicked,
                 self.enable_shortcut,
+                self.show_clock,
             )
 
             if self.context.is_wayland:
@@ -364,10 +369,13 @@ class BreakScreenWindow(Gtk.Window):
     __gtype_name__ = "BreakScreenWindow"
 
     lbl_message: Gtk.Label = Gtk.Template.Child()
+    lbl_clock_time: Gtk.Label = Gtk.Template.Child()
     lbl_count: Gtk.Label = Gtk.Template.Child()
     lbl_widget: Gtk.Label = Gtk.Template.Child()
     img_break: Gtk.Picture = Gtk.Template.Child()
+    clock_face: Gtk.DrawingArea = Gtk.Template.Child()
     box_buttons: Gtk.Box = Gtk.Template.Child()
+    box_clock: Gtk.Box = Gtk.Template.Child()
     toolbar: Gtk.Box = Gtk.Template.Child()
 
     button_widgets: list[Gtk.Button] = []
@@ -387,11 +395,18 @@ class BreakScreenWindow(Gtk.Window):
         show_skip: bool,
         on_skip: typing.Callable[[Gtk.Button], None],
         enable_shortcut: bool,
+        show_clock: bool,
     ):
         super().__init__(application=application)
 
         self.on_close = on_close
         self.img_break.set_content_fit(Gtk.ContentFit.SCALE_DOWN)
+        self.button_widgets = []
+        self._current_time = datetime.now()
+        self._clock_display_time: typing.Optional[str] = None
+        self.clock_face.set_draw_func(self.__draw_clock_face)
+        self.box_clock.set_visible(show_clock)
+        has_widget = widget.strip() != ""
 
         for tray_action in tray_actions:
             # TODO: apparently, this would be better served with an icon theme
@@ -432,15 +447,113 @@ class BreakScreenWindow(Gtk.Window):
 
         # Set values
         if image_path:
-            self.__set_break_image(image_path, monitor_width, monitor_height)
+            self.__set_break_image(
+                image_path,
+                monitor_width,
+                monitor_height,
+                reserve_clock_space=show_clock and has_widget,
+            )
         self.lbl_message.set_label(message)
         self.lbl_widget.set_markup(widget)
+        self.__refresh_clock(force=True)
 
     def set_count_down(self, count: str, enable_shortcut: bool) -> None:
         self.lbl_count.set_text(count)
 
         for button in self.button_widgets:
             button.set_sensitive(enable_shortcut)
+
+        self.__refresh_clock()
+
+    def __refresh_clock(self, force: bool = False) -> None:
+        self._current_time = datetime.now()
+        clock_display_time = utility.format_time(self._current_time.time())
+
+        if not force and clock_display_time == self._clock_display_time:
+            return
+
+        self._clock_display_time = clock_display_time
+        self.lbl_clock_time.set_text(clock_display_time)
+        self.clock_face.queue_draw()
+
+    def __draw_clock_face(self, area, cr, width: int, height: int) -> None:
+        center_x = width / 2
+        center_y = height / 2
+        radius = (min(width, height) / 2) - 6
+
+        cr.set_source_rgba(1, 1, 1, 0.12)
+        cr.arc(center_x, center_y, radius, 0, 2 * math.pi)
+        cr.fill_preserve()
+        cr.set_source_rgb(1, 1, 1)
+        cr.set_line_width(3)
+        cr.stroke()
+
+        for hour in range(12):
+            angle = math.radians((hour * 30) - 90)
+            outer_radius = radius - 8
+            inner_radius = radius - (22 if hour % 3 == 0 else 15)
+            cr.set_line_width(4 if hour % 3 == 0 else 2)
+            cr.move_to(
+                center_x + math.cos(angle) * inner_radius,
+                center_y + math.sin(angle) * inner_radius,
+            )
+            cr.line_to(
+                center_x + math.cos(angle) * outer_radius,
+                center_y + math.sin(angle) * outer_radius,
+            )
+            cr.stroke()
+
+        minutes = self._current_time.minute
+        hours = (self._current_time.hour % 12) + (minutes / 60)
+
+        self.__draw_clock_hand(
+            cr,
+            center_x,
+            center_y,
+            (hours * 30) - 90,
+            radius * 0.5,
+            6,
+            1,
+            1,
+            1,
+        )
+        self.__draw_clock_hand(
+            cr,
+            center_x,
+            center_y,
+            (minutes * 6) - 90,
+            radius * 0.72,
+            4,
+            1,
+            1,
+            1,
+        )
+        cr.set_source_rgb(1, 1, 1)
+        cr.arc(center_x, center_y, 5, 0, 2 * math.pi)
+        cr.fill()
+
+    def __draw_clock_hand(
+        self,
+        cr,
+        center_x: float,
+        center_y: float,
+        angle_degrees: float,
+        length: float,
+        line_width: float,
+        red: float,
+        green: float,
+        blue: float,
+    ) -> None:
+        angle = math.radians(angle_degrees)
+        cr.set_source_rgb(red, green, blue)
+        cr.set_line_width(line_width)
+        cr.set_line_cap(1)
+        cr.move_to(center_x, center_y)
+        cr.line_to(
+            center_x + math.cos(angle) * length,
+            center_y + math.sin(angle) * length,
+        )
+        cr.stroke()
 
     def __tray_action(self, button, tray_action: TrayAction) -> None:
         """Tray action handler.
@@ -453,11 +566,18 @@ class BreakScreenWindow(Gtk.Window):
         tray_action.action()
 
     def __set_break_image(
-        self, image_path: str, monitor_width: int, monitor_height: int
+        self,
+        image_path: str,
+        monitor_width: int,
+        monitor_height: int,
+        reserve_clock_space: bool = False,
     ) -> None:
         """Load the break image and cap it relative to the current monitor size."""
         max_width = max(1, (monitor_width * 8) // 10 - 1)
         max_height = max(1, (monitor_height * 3) // 10 - 1)
+
+        if reserve_clock_space:
+            max_height = min(max_height, max(1, (monitor_height * 22) // 100 - 1))
 
         try:
             loaded = GdkPixbuf.Pixbuf.new_from_file(image_path)

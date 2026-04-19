@@ -199,6 +199,7 @@ This method has the same caveats about icons/window icons as running from source
 - Middle-click the tray icon to start a short break
 - Command-line arguments to control the running instance
 - Customizable using plug-ins
+- Displays clock in the break screen
 
 ## Third-party Plugins
 

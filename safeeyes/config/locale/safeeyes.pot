@@ -171,6 +171,10 @@ msgid "Allow postponing breaks"
 msgstr ""
 
 # Settings dialog
+msgid "Show clock on the break screen"
+msgstr ""
+
+# Settings dialog
 msgid "Persist the internal state"
 msgstr ""
 

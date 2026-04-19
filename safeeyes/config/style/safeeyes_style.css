@@ -83,6 +83,12 @@
     color: white;
 }
 
+.lbl_clock_time {
+    font-size: 20pt;
+    color: white;
+    font-weight: bold;
+}
+
 .lbl_widget {
     font-size: 9pt;
     color: white;
