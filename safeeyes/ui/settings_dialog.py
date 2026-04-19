@@ -245,6 +245,14 @@ class SettingsDialog(Gtk.ApplicationWindow):
 
         break_item.update_break_name()
 
+    def __add_break(self, break_config: dict, is_short: bool) -> None:
+        self.__create_break_item(break_config, is_short)
+
+        if is_short:
+            self.config.get("short_breaks").append(break_config)
+        else:
+            self.config.get("long_breaks").append(break_config)
+
     def __create_plugin_item(self, plugin_config: dict) -> "PluginItem":
         """Create an entry for plugin to be listed in the plugin tab."""
         box = PluginItem(
@@ -325,10 +333,7 @@ class SettingsDialog(Gtk.ApplicationWindow):
         """Event handler for add break button."""
         dialog = NewBreakDialog(
             self,
-            self.config,
-            lambda is_short, break_config: self.__create_break_item(
-                break_config, is_short
-            ),
+            on_add=self.__add_break,
         )
         dialog.show()
 
@@ -775,15 +780,15 @@ class NewBreakDialog(Gtk.Window):
     txt_break: Gtk.Entry = Gtk.Template.Child()
     cmb_type: Gtk.ComboBox = Gtk.Template.Child()
 
+    on_add: typing.Callable[[dict, bool], None]
+
     def __init__(
         self,
         parent: Gtk.Window,
-        parent_config: Config,
-        on_add: typing.Callable[[bool, dict], None],
+        on_add: typing.Callable[[dict, bool], None],
     ):
         super().__init__(transient_for=parent)
 
-        self.parent_config = parent_config
         self.on_add = on_add
 
     @Gtk.Template.Callback()
@@ -796,12 +801,7 @@ class NewBreakDialog(Gtk.Window):
         """Event handler for Properties dialog close action."""
         break_config = {"name": self.txt_break.get_text().strip()}
 
-        if self.cmb_type.get_active() == 0:
-            self.parent_config.get("short_breaks").append(break_config)
-            self.on_add(True, break_config)
-        else:
-            self.parent_config.get("long_breaks").append(break_config)
-            self.on_add(False, break_config)
+        self.on_add(break_config, self.cmb_type.get_active() == 0)
         self.destroy()
 
     @Gtk.Template.Callback()
