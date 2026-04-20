@@ -616,3 +616,18 @@ msgstr ""
 
 msgid "take a long break now"
 msgstr ""
+
+msgid "Safe Eyes wants to run in the background."
+msgstr ""
+
+msgid "Startup"
+msgstr ""
+
+msgid "Automatically start on login"
+msgstr ""
+
+msgid "Request autostart"
+msgstr ""
+
+msgid "Disable autostart"
+msgstr ""
