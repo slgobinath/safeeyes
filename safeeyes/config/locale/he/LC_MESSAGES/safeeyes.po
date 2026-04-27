@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-04-10 13:12+0000\n"
+"PO-Revision-Date: 2026-04-28 18:09+0000\n"
 "Last-Translator: \"Omer I.S.\" <omeritzicschwartz@gmail.com>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/safe-eyes/"
 "translations/he/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 
 # Short break
 msgid "Gently close your eyes"
@@ -55,7 +55,7 @@ msgstr "להישען אחורה בכיסא ולהירגע"
 
 # Short break
 msgid "Take five slow, deep breaths"
-msgstr ""
+msgstr "לקחת חמש נשימות עמוקות ואיטיות"
 
 # Short break
 msgid "Relax your shoulders and drop them away from your ears"
@@ -67,7 +67,7 @@ msgstr ""
 
 # Short break
 msgid "Stretch your neck gently from side to side"
-msgstr ""
+msgstr "למתוח את הצוואר בעדינות מצד לצד"
 
 # Short break
 msgid "Check your posture and sit back comfortably"
@@ -91,7 +91,7 @@ msgstr ""
 
 # Long break
 msgid "Rest your eyes and focus on distant objects"
-msgstr ""
+msgstr "לתת מנוחה לעיניים ולהתמקד בחפצים רחוקים"
 
 # Commandline arg description
 msgid "show the about dialog"
@@ -646,7 +646,7 @@ msgid "Fade in when breaks start"
 msgstr ""
 
 msgid "Fade in duration (in milliseconds)"
-msgstr ""
+msgstr "משך זמן עמעום (במילישניות)"
 
 # Commandline arg description
 #~ msgid "print the status of running safeeyes instance and exit"
