@@ -1,0 +1,58 @@
+name: SafeEyes
+options:
+  bundleIdPrefix: com.safeeyes
+  deploymentTarget:
+    macOS: "13.0"
+  xcodeVersion: "15.0"
+settings:
+  base:
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    SWIFT_VERSION: "5.9"
+
+targets:
+  SafeEyes:
+    type: application
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: SafeEyes/App
+      - path: SafeEyes/Core
+      - path: SafeEyes/Services
+      - path: SafeEyes/Controllers
+      - path: SafeEyes/ViewModels
+      - path: SafeEyes/Views
+      - path: SafeEyes/Resources
+      - path: SafeEyes/Support
+    info:
+      path: SafeEyes/Support/Info.plist
+      properties:
+        LSUIElement: true   # Hide from Dock and Cmd+Tab (pure menu-bar agent)
+    entitlements:
+      path: SafeEyes/Support/SafeEyes.entitlements
+    settings:
+      base:
+        PRODUCT_NAME: SafeEyes
+        PRODUCT_BUNDLE_IDENTIFIER: com.safeeyes.app
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: SafeEyes/Support/Info.plist
+        CODE_SIGN_ENTITLEMENTS: SafeEyes/Support/SafeEyes.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+        ENABLE_APP_SANDBOX: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        COMBINE_HIDPI_IMAGES: YES
+
+  SafeEyesTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: SafeEyesTests
+    dependencies:
+      - target: SafeEyes
+    settings:
+      base:
+        PRODUCT_NAME: SafeEyesTests
+        PRODUCT_BUNDLE_IDENTIFIER: com.safeeyes.appTests
+        ENABLE_HARDENED_RUNTIME: NO
+        ENABLE_APP_SANDBOX: NO
+        GENERATE_INFOPLIST_FILE: YES

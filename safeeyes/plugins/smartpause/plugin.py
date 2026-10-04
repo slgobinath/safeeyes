@@ -18,6 +18,7 @@
 
 import datetime
 import logging
+import sys
 import typing
 
 from safeeyes.model import State
@@ -155,7 +156,11 @@ def on_start() -> None:
 
     if idle_monitor is None:
         try:
-            if is_wayland_and_gnome:
+            if sys.platform == "darwin":
+                from .macos import IdleMonitorMacOS
+
+                idle_monitor = IdleMonitorMacOS()
+            elif is_wayland_and_gnome:
                 idle_monitor = IdleMonitorGnomeDBus()
             elif use_swayidle:
                 idle_monitor = IdleMonitorSwayidle()

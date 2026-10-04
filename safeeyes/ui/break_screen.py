@@ -32,7 +32,6 @@ from safeeyes.translations import translate as _
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gdk
 from gi.repository import GdkPixbuf
-from gi.repository import GdkX11
 from gi.repository import Gtk
 
 BREAK_SCREEN_GLADE = os.path.join(utility.BIN_DIRECTORY, "glade/break_screen.glade")
@@ -71,7 +70,7 @@ class BreakScreen:
         self.show_skip_button = False
         self.show_postpone_button = False
 
-        if not self.context.is_wayland:
+        if utility.is_x11():
             import Xlib.display
 
             self.x11_display = Xlib.display.Display()
@@ -148,7 +147,7 @@ class BreakScreen:
         windows.
         """
         logging.info("Close the break screen(s)")
-        if not self.context.is_wayland:
+        if utility.is_x11():
             self.__release_keyboard_x11()
 
         # Destroy other windows if exists
@@ -163,7 +162,8 @@ class BreakScreen:
     ) -> None:
         """Show an empty break screen on all screens."""
         # Lock the keyboard
-        if not self.context.is_wayland:
+        # Lock the keyboard (X11 only)
+        if utility.is_x11():
             utility.start_thread(self.__lock_keyboard_x11)
 
         display = Gdk.Display.get_default()
@@ -231,7 +231,7 @@ class BreakScreen:
             # shortcut
             window.set_focus(None)
 
-            if not self.context.is_wayland:
+            if utility.is_x11():
                 self.__window_set_keep_above_x11(window)
 
             if self.context.is_wayland:
@@ -251,11 +251,12 @@ class BreakScreen:
             window.set_count_down(count, enable_shortcut)
 
     def __window_set_keep_above_x11(self, window: "BreakScreenWindow") -> None:
-        """Use EWMH hints to keep window above and on all desktops."""
+        """Use EWMH hints to keep window above and on all desktops (X11 only)."""
         if self.x11_display is None:
             return
 
         import Xlib
+        from gi.repository import GdkX11
 
         NET_WM_STATE = self.x11_display.intern_atom("_NET_WM_STATE")
         NET_WM_STATE_ABOVE = self.x11_display.intern_atom("_NET_WM_STATE_ABOVE")

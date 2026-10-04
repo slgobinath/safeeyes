@@ -17,13 +17,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+import sys
 
 import gi
 from safeeyes.model import BreakType
 from safeeyes.translations import translate as _
 
-gi.require_version("Notify", "0.7")
-from gi.repository import Notify
+if sys.platform != "darwin":
+    gi.require_version("Notify", "0.7")
+    from gi.repository import Notify
 
 """
 Safe Eyes Notification plugin
@@ -34,7 +36,8 @@ notification = None
 context = None
 warning_time = 10
 
-Notify.init(APPINDICATOR_ID)
+if sys.platform != "darwin":
+    Notify.init(APPINDICATOR_ID)
 
 
 def init(ctx, safeeyes_config, plugin_config):
@@ -57,9 +60,14 @@ def on_pre_break(break_obj):
     else:
         message += _("Ready for a long break in %s seconds") % warning_time
 
-    notification = Notify.Notification.new(
-        "Safe Eyes", message, icon="io.github.slgobinath.SafeEyes-enabled"
-    )
+    if sys.platform == "darwin":
+        from .macos import MacOSNotification
+
+        notification = MacOSNotification("Safe Eyes", message)
+    else:
+        notification = Notify.Notification.new(
+            "Safe Eyes", message, icon="io.github.slgobinath.SafeEyes-enabled"
+        )
     try:
         notification.show()
     except BaseException:
@@ -82,4 +90,5 @@ def on_start_break(break_obj):
 def on_exit():
     """Uninitialize the registered notification."""
     logging.debug("Stop Notification plugin")
-    Notify.uninit()
+    if sys.platform != "darwin":
+        Notify.uninit()

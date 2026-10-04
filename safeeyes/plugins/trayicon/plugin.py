@@ -19,6 +19,7 @@
 import datetime
 from safeeyes.model import BreakType
 import gi
+import sys
 
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gio, GLib
@@ -486,7 +487,7 @@ class TrayIcon:
 
     _resume_timeout_id: typing.Optional[int] = None
 
-    _session_bus: Gio.DBusConnection
+    _session_bus: typing.Optional[Gio.DBusConnection] = None
 
     def __init__(self, context: Context, plugin_config):
         self.context = context
@@ -505,23 +506,33 @@ class TrayIcon:
         self.allow_disabling = plugin_config["allow_disabling"]
         self.menu_locked = False
 
-        # This is using a separate dbus connection on purpose
-        # StatusNotifierWatcher does not have an unregister method - the spec instead
-        # says that the watcher should detect the item "going away from the bus"
-        # in practice, this means that the connection closing is detected by the watcher
-        # which can only happen if we use our own connection, and close it manually
-        self._session_bus = Gio.DBusConnection.new_for_address_sync(
-            Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION),
-            Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT
-            | Gio.DBusConnectionFlags.MESSAGE_BUS_CONNECTION,
-        )
+        if sys.platform == "darwin":
+            from .macos import MacOSTrayService
 
-        self.sni_service = StatusNotifierItemService(
-            self._session_bus,
-            menu_items=self.get_items(),
-            on_secondary_activate=self.on_secondary_activate,
-        )
-        self.sni_service.register()
+            self.sni_service = MacOSTrayService(
+                menu_items=self.get_items(),
+                on_secondary_activate=self.on_secondary_activate,
+            )
+            self.sni_service.register()
+        else:
+            # This is using a separate dbus connection on purpose.
+            # StatusNotifierWatcher does not have an unregister method - the
+            # spec instead says that the watcher should detect the item
+            # "going away from the bus". In practice, this means that the
+            # connection closing is detected by the watcher, which can only
+            # happen if we use our own connection, and close it manually.
+            self._session_bus = Gio.DBusConnection.new_for_address_sync(
+                Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION),
+                Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT
+                | Gio.DBusConnectionFlags.MESSAGE_BUS_CONNECTION,
+            )
+
+            self.sni_service = StatusNotifierItemService(
+                self._session_bus,
+                menu_items=self.get_items(),
+                on_secondary_activate=self.on_secondary_activate,
+            )
+            self.sni_service.register()
 
         self.update_tooltip()
 
@@ -535,7 +546,9 @@ class TrayIcon:
 
     def unregister(self) -> None:
         self.sni_service.unregister()
-        self._session_bus.close_sync()
+        if self._session_bus is not None:
+            self._session_bus.close_sync()
+            self._session_bus = None
 
     def get_items(self):
         breaks_found = self.has_breaks()

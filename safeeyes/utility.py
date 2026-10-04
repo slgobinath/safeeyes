@@ -74,6 +74,7 @@ SYSTEM_DESKTOP_FILE = os.path.join(
 SYSTEM_ICONS = os.path.join(BIN_DIRECTORY, "platform/icons")
 DESKTOP_ENVIRONMENT = None
 IS_WAYLAND = False
+IS_MACOS = sys.platform == "darwin"
 
 
 def get_resource_path(resource_name):
@@ -276,9 +277,26 @@ def load_plugins_config(safeeyes_config):
     return configs
 
 
+def is_macos() -> bool:
+    """Return True if the current platform is macOS."""
+    return sys.platform == "darwin"
+
+
+def is_x11() -> bool:
+    """Return True only when running under a real X11/Xorg session.
+
+    Returns False on Wayland and macOS so that Xlib calls are never
+    attempted outside an X11 session.
+    """
+    return not IS_MACOS and not IS_WAYLAND
+
+
 def desktop_environment():
     """Detect the desktop environment."""
     global DESKTOP_ENVIRONMENT
+    if sys.platform == "darwin":
+        DESKTOP_ENVIRONMENT = "macos"
+        return "macos"
     desktop_session = os.environ.get("DESKTOP_SESSION")
     current_desktop = os.environ.get("XDG_CURRENT_DESKTOP")
     env = "unknown"
@@ -335,6 +353,10 @@ def is_wayland():
     https://unix.stackexchange.com/a/325972/222290
     """
     global IS_WAYLAND
+
+    if sys.platform == "darwin":
+        IS_WAYLAND = False
+        return False
 
     # Easy method. Does not depend on loginctl
     # https://stackoverflow.com/questions/45536141/how-i-can-find-out-if-a-linux-system-uses-wayland-or-x11/45537237#45537237

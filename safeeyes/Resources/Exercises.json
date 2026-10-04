@@ -1,0 +1,58 @@
+[
+  {
+    "id": "20-20-20",
+    "title": "20-20-20 Rule",
+    "instruction": "Look at an object at least 20 feet away for 20 seconds to relax your eye muscles.",
+    "symbol": "eye",
+    "kind": "short"
+  },
+  {
+    "id": "blink-slowly",
+    "title": "Blink Slowly",
+    "instruction": "Close your eyes gently, pause for 2 seconds, then open slowly. Repeat 4 times.",
+    "symbol": "sparkles",
+    "kind": "short"
+  },
+  {
+    "id": "eye-rolls",
+    "title": "Eye Circles",
+    "instruction": "Roll your eyes slowly in a circle clockwise, then switch to counter-clockwise.",
+    "symbol": "arrow.triangle.2.circlepath",
+    "kind": "short"
+  },
+  {
+    "id": "palming",
+    "title": "Palming",
+    "instruction": "Rub your hands together to warm your palms, then gently cup them over your closed eyes.",
+    "symbol": "hand.raised.fill",
+    "kind": "short"
+  },
+  {
+    "id": "near-far",
+    "title": "Near & Far Focus",
+    "instruction": "Hold your thumb 10 inches from your face. Focus on it for 5 seconds, then focus on a distant point.",
+    "symbol": "scope",
+    "kind": "short"
+  },
+  {
+    "id": "shoulder-roll",
+    "title": "Shoulder Rolls",
+    "instruction": "Roll your shoulders backward slowly 5 times, then forward 5 times to release tension.",
+    "symbol": "figure.walk",
+    "kind": "long"
+  },
+  {
+    "id": "neck-stretch",
+    "title": "Neck Stretch",
+    "instruction": "Gently tilt your head toward your shoulder and hold for 10 seconds. Switch sides.",
+    "symbol": "figure.mind.and.body",
+    "kind": "long"
+  },
+  {
+    "id": "stand-and-walk",
+    "title": "Stand and Walk",
+    "instruction": "Stand up, stretch your arms overhead, and walk around your room or office.",
+    "symbol": "figure.walk.motion",
+    "kind": "long"
+  }
+]

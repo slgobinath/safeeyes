@@ -1,252 +1,101 @@
-<img src="https://raw.githubusercontent.com/slgobinath/safeeyes/master/safeeyes/platform/icons/hicolor/64x64/apps/io.github.slgobinath.SafeEyes.png" align="left">
+# SafeEyes for macOS (Native)
 
-# Safe Eyes
+SafeEyes is a 100% native macOS menu-bar utility designed to prevent digital eye strain and Repetitive Strain Injury (RSI). Built using pure Swift, SwiftUI, AppKit, and Combine — with zero third-party dependencies, no Python runtime, and no GTK.
 
-[![Release](https://img.shields.io/github/v/release/slgobinath/safeeyes)](https://github.com/slgobinath/safeeyes/releases)
-[![PyPI version](https://badge.fury.io/py/safeeyes.svg)](https://badge.fury.io/py/safeeyes)
-[![Debian](https://badges.debian.net/badges/debian/unstable/safeeyes/version.svg)](https://packages.debian.org/unstable/safeeyes)
-[![AUR](https://img.shields.io/aur/version/safeeyes)](https://aur.archlinux.org/packages/safeeyes)
-[![Flathub](https://img.shields.io/flathub/v/io.github.slgobinath.SafeEyes)](https://flathub.org/apps/details/io.github.slgobinath.SafeEyes)
-[![Translation status](https://hosted.weblate.org/widgets/safe-eyes/-/translations/svg-badge.svg)](https://hosted.weblate.org/engage/safe-eyes/?utm_source=widget)
-[![Awesome Humane Tech](https://raw.githubusercontent.com/humanetech-community/awesome-humane-tech/main/humane-tech-badge.svg?sanitize=true)](https://github.com/humanetech-community/awesome-humane-tech)
-
-Protect your eyes from eye strain using this simple and beautiful, yet extensible break reminder.
-
-[![Star History Chart](https://star-history.dera.page/svg?repos=slgobinath/safeeyes&type=date&legend=top-left)](https://star-history.dera.page/#slgobinath/safeeyes&type=date&legend=top-left)
-
-Visit the official site: https://slgobinath.github.io/safeeyes/ for more details.
-
-## Safe Eyes command-line arguments
-
-```text
-Usage:
-  safeeyes [OPTION…]
-
-Help Options:
-  -h, --help                 Show help options
-  --help-all                 Show all help options
-  --help-gapplication        Show GApplication options
-
-Application Options:
-  -a, --about                show the about dialog
-  -s, --settings             show the settings dialog
-  -t, --take-break           take a break now
-  -b, --short-break          take a short break now
-  -l, --long-break           take a long break now
-  -d, --disable              disable the currently running Safe Eyes instance
-  -e, --enable               enable the currently running Safe Eyes instance
-  -q, --quit                 quit the running Safe Eyes instance and exit
-  --status                   print the status of running Safe Eyes instance and exit
-  --debug                    start Safe Eyes in debug mode
-  --version                  show program's version number and exit
-```
-
-## Installation guide
-
-Safe Eyes is available on the official repositories of many popular the distributions.
-
-<a href="https://repology.org/project/safeeyes/versions">
-    <img src="https://repology.org/badge/vertical-allrepos/safeeyes.svg" alt="Packaging status" align="right">
-</a>
-
-It is also available in Ubuntu PPA, Arch AUR and Python PyPI. You can choose any installation source and install on any Linux system with Python 3.
-
-
-### Ubuntu, Linux Mint and other Ubuntu Derivatives
-
-The [Official PPA for Safe Eyes](https://launchpad.net/~safeeyes-team/+archive/ubuntu/safeeyes) hosts the latest (as much as allowed by dependencies) version of Safe Eyes **for Ubuntu 22.04 and above**. 
-```bash
-sudo add-apt-repository ppa:safeeyes-team/safeeyes
-sudo apt update
-sudo apt install safeeyes
-```
-
-On older versions of Ubuntu, an older version of Safe Eyes is available on the official repositories.
-```bash
-sudo apt install safeeyes
-```
-
-### Arch
-
-```bash
-yay -S safeeyes
-```
-
-### Gentoo
-
-```bash
-sudo emerge -av x11-misc/safeeyes
-```
-
-### Debian
-
-```bash
-sudo apt-get install safeeyes
-```
-
-### Fedora
-
-You can install with `pip`
-```bash
-pip3 install --user safeeyes
-```
-For smartpause in Wayland, install the `python3-pywayland` package (in case the installer does not automatically install it as a dependency). For smart pause plugin in X11, you may have to install the latest xprintidle from: [alonid/xprintidle](https://copr.fedorainfracloud.org/coprs/alonid/xprintidle/).
-
-Alternatively, use the [Flatpak version](https://github.com/slgobinath/safeeyes?tab=readme-ov-file#flatpak), which comes preinstalls with dependencies and features automatic updates.
-
-### OpenSUSE Tumbleweed
-
-```bash
-sudo zypper refresh
-sudo zypper install safeeyes
-```
-
-### Alpine Linux
-
-```bash
-sudo apk add safeeyes
-```
-
-### Chrome OS
-[Enable the Linux container](https://support.google.com/chromebook/answer/9145439?hl=en) (which is actually Debian), and install Safe Eyes with
-```
-sudo apt install safeeyes
-```
-While no tray icon is available, if you run the app, it will function in the background and will show breaks as usual. You can also change the settings by clicking on the Safe Eyes icon from the menu while the app is running, or by running the command `safeeyes -s`.
-
-### Flatpak
-**Warning**: Many plugins and features don't work well in the flatpak. We recommend that you use one of the native packages listed above. Flatpak-only bugs should be reported at https://github.com/flathub/io.github.slgobinath.SafeEyes.
-```bash
-flatpak install flathub io.github.slgobinath.SafeEyes
-```
-
-### Other Linux & Run from source
-
-Ensure to meet the following dependencies:
-
-- `gir1.2-notify-0.7`
-- `gir1.2-gtk-4.0`
-- `ffmpeg` or `pipewire` (any of them works)
-- `python3` (>= 3.10.0)
-- `python3-gi`
-- `python3-babel`
-- `python3-croniter`
-- `python3-packaging`
-- `python3-xlib` (required on x11)
-- **Optional**: Either `python3-pywayland` (provides smartpause in Wayland) or `xprintidle` (provides smartpause in x11).
-
-**To install Safe Eyes from PyPI:**
-
-```bash
-sudo pip3 install safeeyes
-```
-
-After installation, restart your system to update the icons,
-
-**To run from source:**
-
-```bash
-git clone https://github.com/slgobinath/safeeyes.git
-cd SafeEyes
-python3 -m safeeyes
-```
-
-Safe Eyes installers install the required icons to `/usr/share/icons/hicolor`. When you run Safe Eyes from source without, some icons may not appear.
-
-Note that on Wayland, this may still not be enough to get window icons working properly, as Wayland requires the .desktop file to match the running application, which is hard to do when running from source. If at all possible, prefer using an installed package.
-
-
-### Install in a virtual environment
-
-Some Linux systems like CentOS do not have matching dependencies available in their repository (of course you can use the flatpak there). In such systems, you can install and use Safe Eyes in a Python virtual environment.
-
-1. Install the necessary dependencies for CentOS 7
-
-    ```bash
-    sudo yum install python3-devel cairo cairo-devel cairomm-devel libjpeg-turbo-devel pango pango-devel pangomm pangomm-devel gobject-introspection-devel cairo-gobject-devel
-    ```
-
-2. Create a virtual environment in your home folder
-
-    ```bash
-    mkdir ~/safeeyes
-    cd ~/safeeyes/
-
-    python3 -m venv venv
-    source venv/bin/activate
-    pip3 install safeeyes
-    ```
-
-3. Start Safe Eyes from the terminal
-
-    ```bash
-    cd ~/safeeyes & source venv/bin/activate
-    python3 -m safeeyes
-    ```
-
-For more details, please check the issue: [#329](https://github.com/slgobinath/safeeyes/issues/329)
-
-This method has the same caveats about icons/window icons as running from source.
+---
 
 ## Features
 
-- Remind you to take breaks with exercises to reduce RSI
-- Disable keyboard during breaks
-- Notification before and after breaks
-- Smart pause if system is idle
-- Multi-screen support
-- Customizable user interface
-- Middle-click the tray icon to start a short break
-- Command-line arguments to control the running instance
-- Customizable using plug-ins
+- **Menu Bar Resident (`LSUIElement`):** Runs cleanly in the menu bar with dynamic status countdowns and live icon updates.
+- **Scientifically Proven Intervals:** Configurable short breaks (e.g. 20-20-20 rule) and periodic long restorative breaks.
+- **Pure Functional Reducer Architecture:** Driven by `BreakScheduler.reduce` — 100% unit-tested and deterministic.
+- **Hardware-Accelerated Fullscreen Overlays:** Custom `BreakWindow` shields every connected display, floating above the Dock, menu bar, and native fullscreen Spaces.
+- **Smart Idle Detection:** Tracks system inactivity via `CGEventSource` without needing Accessibility or Input Monitoring permissions. Naturally credits time away toward your breaks.
+- **Strict Mode with Emergency Safety Valve:** Prevents break avoidance and locks app-switching shortcuts. In an emergency, holding `⌥⌘⇧E` (Option + Command + Shift + E) for 5 seconds force-skips the break.
+- **Multi-Monitor Awareness:** Automatically reconstructs overlay viewports when displays are hot-plugged or resolution changes.
+- **Accessibility & Reduce Motion:** Fully tagged with VoiceOver elements, values, and hints; honors system-wide Reduce Motion preferences.
+- **Localization & Right-to-Left (RTL):** Comprehensive English and Arabic support via String Catalogs (`Localizable.xcstrings`), with full bidirectional and RTL dynamic layout adaptation.
+- **Launch at Login:** Seamlessly integrates with Apple's modern `SMAppService` with approval status warnings.
+- **System Event Awareness:** Automatically pauses and credits breaks on system sleep, display sleep, and screen lock/unlock.
 
-## Third-party Plugins
+---
 
-Thirdparty plugins are available at another GitHub repository: [safeeyes-plugins](https://github.com/slgobinath/safeeyes-plugins). More details about how to write your own plugin and how to install third-party plugin are available there.
+## System Requirements
 
-## Local development
+- **Operating System:** macOS 13.0 (Ventura) or newer
+- **Architecture:** Apple Silicon (arm64) and Intel (x86_64)
+- **Build Tools:** [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`) and Xcode 15+
 
-When adding new translatable strings in the source code, make sure to run `python validate_po.py --extract` to add them to the translation template. You will need to install `python3-polib` for this.
+---
 
-Examples for translatable strings are `_("This is a string")` in Python code, or `<property name="label" translatable="yes">This is a label</property>` in Glade/xml files.
+## Building and Running
 
-To ensure the new strings are well-formed, you can use `python validate_po.py --validate`.
+### 1. Generate Xcode Project
+We use **XcodeGen** so that project files are generated deterministically:
+```bash
+xcodegen generate
+```
 
-To ensure that the coding and formatting guidelines are followed, install [ruff](https://docs.astral.sh/ruff/) and run `ruff check` and `ruff format --check` to check for issues, as well as `ruff check --fix` and `ruff format` to autofix them.
+### 2. Build via Command Line
+```bash
+xcodebuild -scheme SafeEyes build
+```
 
-To ensure that any types are correct, install [mypy](https://github.com/python/mypy) and run `mypy safeeyes`.
+### 3. Run Unit Tests
+```bash
+xcodebuild test -scheme SafeEyes
+```
 
-To ensure that the tests still pass, install [pytest](https://docs.pytest.org/en/stable/) and run `pytest`.
+### 4. Open in Xcode
+```bash
+open SafeEyes.xcodeproj
+```
 
-The last four checks are also run in CI, so a PR must pass all the tests for it to be mmerged.
+---
 
-It is also possible to use dependency groups to install the needed dependencies. When using a new enough version of pip, run `pip install --group types` to install all dependencies to run the type check.
-The available dependency groups can be found in the `pyproject.toml` file.
+## Strict Mode & Emergency Exit
 
-## How to Release?
+When **Strict Mode** is enabled:
+- Break overlays lock down the screen and hide the Dock and Menu Bar.
+- System hotkeys (⌘Tab, ⌘Q, ⌘H, Esc) and mouse clicks outside buttons are swallowed.
+- Postponing and regular skipping are disabled.
 
-0. Run `update-po.sh` to generate new translation files (which will be eventually updated by translators). Commit and push the changes to the master branch.
-1. Checkout the latest commits from the `master` branch
-2. Run `python3 -m safeeyes` to make sure nothing is broken
-3. Update the Safe Eyes version. Run `./update-version.sh "version.number.number" "New version with shiny new feature"`. 
-To manually change the version number, update the following places (Open the project in VSCode and search for the current version):
-    - [pyproject.toml](https://github.com/slgobinath/safeeyes/blob/master/pyproject.toml#L4)
-    - [pyproject.toml](https://github.com/slgobinath/safeeyes/blob/master/pyproject.toml#L35)
-    - [io.github.slgobinath.SafeEyes.metainfo.xml](https://github.com/slgobinath/safeeyes/blob/master/safeeyes/platform/io.github.slgobinath.SafeEyes.metainfo.xml#L56)
-4. Update the [changelog](https://github.com/slgobinath/safeeyes/blob/master/debian/changelog) (for Ubuntu PPA release). *This is automated* if you use the `./update-version.sh` script mentioned above, but you may want to manually add more lines to describe what's new in this release.
-5. Commit the changes to `master`
-6. Create a pull-request from `master` to `release`
-7. Merge the PR to release **with merge commit** (Important to merge with merge commit)
+### Emergency Exit Shortcut
+If you must urgently return to your desktop during a strict break:
+> **Hold `⌥⌘⇧E` (Option + Command + Shift + E) continuously for 5 seconds.**
+> SafeEyes will detect the sustained hold, safely dismiss the overlay, and log the emergency override.
 
-## How you can help improving translation of Safe Eyes
+---
 
-First check if translations for your language are already available on [Weblate](https://hosted.weblate.org/engage/safe-eyes/), which is the cloud based translation platform we use. 
+## Permissions & Privacy
 
-<a href="https://hosted.weblate.org/engage/safe-eyes/"><img src="https://hosted.weblate.org/widget/safe-eyes/horizontal-auto.svg" alt="Translation status"></a>
+SafeEyes respects your privacy:
+- **No Accessibility Permissions Required:** Idle tracking uses `CGEventSource.secondsSinceLastEventType` which requires zero special permissions.
+- **No Input Monitoring Required:** Keystrokes are never recorded or logged.
+- **Notifications (Optional):** Prompts on first launch to deliver pre-break notifications.
 
-- If the language is already there, feel free to add new translations or improve the existing ones.
-- If it is not there, please [open an issue](https://github.com/slgobinath/safeeyes/issues) in Github so that we can add your language to Weblate.
+---
+
+## Packaging a Release
+
+To build a notarized DMG for distribution:
+```bash
+export DEVELOPER_ID_APPLICATION="Developer ID Application: Your Name (TEAMID)"
+export NOTARY_APPLE_ID="your-apple-id@example.com"
+export NOTARY_PASSWORD="app-specific-password"
+export NOTARY_TEAM_ID="TEAMID"
+
+./scripts/release.sh
+```
+
+---
+
+## Legacy Python Implementation
+
+The original cross-platform Python implementation has been preserved in [README_PYTHON_LEGACY.md](README_PYTHON_LEGACY.md).
+
+---
 
 ## License
 
-GNU General Public License v3
+SafeEyes is open-source software licensed under the [GNU General Public License v3.0](LICENSE).

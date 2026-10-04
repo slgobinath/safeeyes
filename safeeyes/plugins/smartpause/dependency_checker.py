@@ -16,11 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+
 from safeeyes import utility
 from safeeyes.translations import translate as _
 
 
 def validate(plugin_config, plugin_settings):
+    if sys.platform == "darwin":
+        return None
     command = None
     if utility.DESKTOP_ENVIRONMENT == "sway":
         command = "swayidle"

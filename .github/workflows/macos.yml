@@ -1,0 +1,98 @@
+name: macOS build & test
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "safeeyes/**"
+      - "setup_mac.py"
+      - "build_mac.sh"
+      - "pyproject.toml"
+      - ".github/workflows/macos.yml"
+  pull_request:
+    branches: [master]
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # Linux: run the existing pytest suite and ruff lint
+  # ──────────────────────────────────────────────────────────────────────────
+  linux-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system GTK4 libraries
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y --no-install-recommends \
+            python3-gi python3-gi-cairo gir1.2-gtk-4.0 \
+            libgtk-4-dev libglib2.0-dev gobject-introspection \
+            libgirepository1.0-dev libnotify-dev gettext
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python deps
+        run: |
+          pip install --upgrade pip
+          pip install -e ".[healthstats,wayland]"
+          pip install ruff pytest pytest-time-machine time-machine
+
+      - name: Ruff lint
+        run: ruff check safeeyes/
+
+      - name: pytest
+        run: pytest safeeyes/tests/ -v
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # macOS: build .app and run --self-test
+  # ──────────────────────────────────────────────────────────────────────────
+  macos-build:
+    runs-on: macos-latest  # Apple Silicon (M1/M2) runner
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Homebrew dependencies
+        run: |
+          brew update
+          brew install gtk4 gobject-introspection glib libffi gettext
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build SafeEyes.app
+        run: |
+          chmod +x build_mac.sh
+          # --no-autostart: Login Items need a running macOS session / GUI
+          ./build_mac.sh --no-autostart
+        env:
+          # Suppress Gatekeeper / notarization prompts in CI
+          PYTHONDONTWRITEBYTECODE: "1"
+
+      - name: Verify self-test passed
+        run: |
+          dist/SafeEyes.app/Contents/MacOS/SafeEyes --self-test
+          echo "Self-test exit code: $?"
+
+      - name: Upload .app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SafeEyes-macos-app
+          path: dist/SafeEyes.app
+          retention-days: 14
+
+      - name: Create DMG (on tag pushes only)
+        if: startsWith(github.ref, 'refs/tags/')
+        run: ./build_mac.sh --no-autostart --dmg
+
+      - name: Upload DMG artifact
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-artifact@v4
+        with:
+          name: SafeEyes-macos-dmg
+          path: dist/*.dmg
+          retention-days: 90

@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+
 from safeeyes.model import PluginDependency
 from safeeyes.translations import translate as _
 
@@ -26,6 +28,9 @@ from gi.repository import Gio
 
 
 def validate(plugin_config, plugin_settings):
+    if sys.platform == "darwin":
+        return None
+
     dbus_proxy = Gio.DBusProxy.new_for_bus_sync(
         bus_type=Gio.BusType.SESSION,
         flags=Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES,

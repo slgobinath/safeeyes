@@ -115,3 +115,14 @@ debian/files
 debian/safeeyes.substvars
 debian/safeeyes.prerm.debhelper
 debian/safeeyes.postinst.debhelper
+
+# macOS / Xcode
+.DS_Store
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+DerivedData/
+*.moved-aside
+*.ipa
+*.dSYM.zip
+*.dSYM

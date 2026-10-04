@@ -11,9 +11,11 @@ authors = [
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: X11 Applications :: GTK",
+    "Environment :: MacOS X :: Cocoa",
     "Environment :: Other Environment",
     "Intended Audience :: End Users/Desktop",
     "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -24,13 +26,13 @@ dependencies = [
     "PyGObject",
     "babel",
     "packaging",
-    "python-xlib"
+    "python-xlib ; sys_platform == 'linux'",
 ]
 requires-python = ">=3.10"
 
 [project.urls]
-Homepage = "https://github.com/slgobinath/safeeyes"
-Downloads = "https://github.com/slgobinath/safeeyes/archive/v3.5.1.tar.gz"
+Homepage = "https://github.com/Mohamed-elgypaly/safeeyes"
+Downloads = "https://github.com/Mohamed-elgypaly/safeeyes/archive/v3.5.1.tar.gz"
 
 [project.scripts]
 safeeyes = "safeeyes.__main__:main"
@@ -38,6 +40,14 @@ safeeyes = "safeeyes.__main__:main"
 [project.optional-dependencies]
 healthstats = ["croniter"]
 wayland = ["pywayland"]
+macos = [
+    "pystray",
+    "Pillow",
+    "pyobjc-core",
+    "pyobjc-framework-Cocoa",
+    "pyobjc-framework-Quartz",
+    "pyobjc-framework-UserNotifications",
+]
 
 [build-system]
 requires = ["setuptools"]

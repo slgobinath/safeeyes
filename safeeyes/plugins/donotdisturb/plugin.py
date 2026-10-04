@@ -257,7 +257,10 @@ def _normalize_window_classes(classes_as_str: str):
 
 
 def __should_skip_break(pre_break: bool) -> bool:
-    if utility.IS_WAYLAND:
+    if utility.IS_MACOS:
+        # No fullscreen detection implemented for macOS yet; never skip.
+        skip_break = False
+    elif utility.IS_WAYLAND:
         if utility.DESKTOP_ENVIRONMENT == "gnome":
             skip_break = is_idle_inhibited_gnome()
         elif utility.DESKTOP_ENVIRONMENT == "kde":
@@ -266,7 +269,7 @@ def __should_skip_break(pre_break: bool) -> bool:
             skip_break = is_active_window_skipped_wayland(pre_break)
     else:
         skip_break = is_active_window_skipped_xorg(pre_break)
-    if dnd_while_on_battery and not skip_break:
+    if dnd_while_on_battery and not skip_break and not utility.IS_MACOS:
         skip_break = is_on_battery()
 
     if skip_break:

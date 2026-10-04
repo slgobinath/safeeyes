@@ -1,0 +1,2118 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Next break in %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next break in %@"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الاستراحة القادمة بعد %@"
+          }
+        }
+      }
+    },
+    "Short break in %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short break in %@"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحة قصيرة بعد %@"
+          }
+        }
+      }
+    },
+    "Long break in %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long break in %@"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحة طويلة بعد %@"
+          }
+        }
+      }
+    },
+    "On a short break (%@)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On a short break (%@)"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "في استراحة قصيرة (%@)"
+          }
+        }
+      }
+    },
+    "On a long break (%@)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On a long break (%@)"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "في استراحة طويلة (%@)"
+          }
+        }
+      }
+    },
+    "Paused (idle)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paused (idle)"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متوقف مؤقتاً (وضع الخمول)"
+          }
+        }
+      }
+    },
+    "Paused (system)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paused (system)"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متوقف مؤقتاً (النظام)"
+          }
+        }
+      }
+    },
+    "Paused until %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paused until %@"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متوقف مؤقتاً حتى %@"
+          }
+        }
+      }
+    },
+    "Paused": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paused"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متوقف مؤقتاً"
+          }
+        }
+      }
+    },
+    "SafeEyes Disabled": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeEyes Disabled"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeEyes معطل"
+          }
+        }
+      }
+    },
+    "Take a Break Now": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take a Break Now"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خذ استراحة الآن"
+          }
+        }
+      }
+    },
+    "Short Break": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short Break"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحة قصيرة"
+          }
+        }
+      }
+    },
+    "Long Break": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long Break"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحة طويلة"
+          }
+        }
+      }
+    },
+    "Pause": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إيقاف مؤقت"
+          }
+        }
+      }
+    },
+    "Resume": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resume"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استئناف"
+          }
+        }
+      }
+    },
+    "Skip Next Break": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip Next Break"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تخطي الاستراحة القادمة"
+          }
+        }
+      }
+    },
+    "Settings…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings…"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الإعدادات…"
+          }
+        }
+      }
+    },
+    "About SafeEyes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About SafeEyes"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حول SafeEyes"
+          }
+        }
+      }
+    },
+    "Quit SafeEyes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quit SafeEyes"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إنهاء SafeEyes"
+          }
+        }
+      }
+    },
+    "30 Minutes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 Minutes"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 دقيقة"
+          }
+        }
+      }
+    },
+    "1 Hour": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 Hour"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساعة واحدة"
+          }
+        }
+      }
+    },
+    "2 Hours": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 Hours"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساعتان"
+          }
+        }
+      }
+    },
+    "Until I Resume": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Until I Resume"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حتى الاستئناف"
+          }
+        }
+      }
+    },
+    "SafeEyes Settings": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeEyes Settings"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعدادات SafeEyes"
+          }
+        }
+      }
+    },
+    "Breaks": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breaks"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الاستراحات"
+          }
+        }
+      }
+    },
+    "Behavior": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Behavior"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "السلوك"
+          }
+        }
+      }
+    },
+    "General": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عام"
+          }
+        }
+      }
+    },
+    "About": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حول"
+          }
+        }
+      }
+    },
+    "Short Breaks": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short Breaks"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحات قصيرة"
+          }
+        }
+      }
+    },
+    "Long Breaks": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long Breaks"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحات طويلة"
+          }
+        }
+      }
+    },
+    "Notification": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notification"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الإشعار"
+          }
+        }
+      }
+    },
+    "Short break every %lld min": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short break every %lld min"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحة قصيرة كل %lld دقيقة"
+          }
+        }
+      }
+    },
+    "Short break every %d min": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short break every %d min"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحة قصيرة كل %d دقيقة"
+          }
+        }
+      }
+    },
+    "Short break duration: %lld sec": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short break duration: %lld sec"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدة الاستراحة القصيرة: %lld ثانية"
+          }
+        }
+      }
+    },
+    "Short break duration: %d sec": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short break duration: %d sec"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدة الاستراحة القصيرة: %d ثانية"
+          }
+        }
+      }
+    },
+    "Long break every %lld short breaks": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long break every %lld short breaks"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحة طويلة كل %lld استراحات قصيرة"
+          }
+        }
+      }
+    },
+    "Long break every %d short breaks": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long break every %d short breaks"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحة طويلة كل %d استراحات قصيرة"
+          }
+        }
+      }
+    },
+    "Long break duration: %lld min": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long break duration: %lld min"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدة الاستراحة الطويلة: %lld دقيقة"
+          }
+        }
+      }
+    },
+    "Long break duration: %d min": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long break duration: %d min"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدة الاستراحة الطويلة: %d دقيقة"
+          }
+        }
+      }
+    },
+    "Pre-break notice: %lld sec": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pre-break notice: %lld sec"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إشعار قبل الاستراحة: %lld ثانية"
+          }
+        }
+      }
+    },
+    "Pre-break notice: %d sec": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pre-break notice: %d sec"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إشعار قبل الاستراحة: %d ثانية"
+          }
+        }
+      }
+    },
+    "Short break interval in minutes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short break interval in minutes"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الفاصل الزمني للاستراحة القصيرة بالدقائق"
+          }
+        }
+      }
+    },
+    "Short break duration in seconds": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short break duration in seconds"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدة الاستراحة القصيرة بالثواني"
+          }
+        }
+      }
+    },
+    "Long break cadence": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long break cadence"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تكرار الاستراحة الطويلة"
+          }
+        }
+      }
+    },
+    "Long break duration in minutes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long break duration in minutes"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدة الاستراحة الطويلة بالدقائق"
+          }
+        }
+      }
+    },
+    "Pre-break notification lead time": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pre-break notification lead time"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقت الإشعار المسبق بالثواني"
+          }
+        }
+      }
+    },
+    "Break Enforcement": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Break Enforcement"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فرض الاستراحة"
+          }
+        }
+      }
+    },
+    "Strict Mode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strict Mode"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الوضع الصارم"
+          }
+        }
+      }
+    },
+    "Allow Postpone": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow Postpone"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "السماح بالتأجيل"
+          }
+        }
+      }
+    },
+    "Postpone is disabled in Strict Mode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Postpone is disabled in Strict Mode"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التأجيل معطل في الوضع الصارم"
+          }
+        }
+      }
+    },
+    "Postpone duration: %lld min": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Postpone duration: %lld min"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدة التأجيل: %lld دقيقة"
+          }
+        }
+      }
+    },
+    "Postpone duration: %d min": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Postpone duration: %d min"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدة التأجيل: %d دقيقة"
+          }
+        }
+      }
+    },
+    "Idle Detection": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idle Detection"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اكتشاف الخمول"
+          }
+        }
+      }
+    },
+    "Idle pause after %lld sec": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idle pause after %lld sec"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إيقاف مؤقت عند الخمول بعد %lld ثانية"
+          }
+        }
+      }
+    },
+    "Idle pause after %d sec": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idle pause after %d sec"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إيقاف مؤقت عند الخمول بعد %d ثانية"
+          }
+        }
+      }
+    },
+    "Extras": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extras"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إضافات"
+          }
+        }
+      }
+    },
+    "Play Sounds": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play Sounds"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تشغيل الأصوات"
+          }
+        }
+      }
+    },
+    "Show Exercises": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Exercises"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عرض التمارين"
+          }
+        }
+      }
+    },
+    "Strict mode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strict mode"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الوضع الصارم"
+          }
+        }
+      }
+    },
+    "When enabled, breaks cannot be skipped or postponed": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When enabled, breaks cannot be skipped or postponed"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عند التفعيل، لا يمكن تخطي الاستراحات أو تأجيلها"
+          }
+        }
+      }
+    },
+    "Allow postponing breaks": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow postponing breaks"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "السماح بتأجيل الاستراحات"
+          }
+        }
+      }
+    },
+    "Postpone duration in minutes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Postpone duration in minutes"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدة التأجيل بالدقائق"
+          }
+        }
+      }
+    },
+    "Idle pause threshold in seconds": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idle pause threshold in seconds"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مهلة الخمول بالثواني"
+          }
+        }
+      }
+    },
+    "Play end-of-break chime": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play end-of-break chime"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تشغيل جرس نهاية الاستراحة"
+          }
+        }
+      }
+    },
+    "Show exercise suggestions during breaks": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show exercise suggestions during breaks"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عرض اقتراحات التمارين أثناء الاستراحات"
+          }
+        }
+      }
+    },
+    "Startup": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startup"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بدء التشغيل"
+          }
+        }
+      }
+    },
+    "Launch SafeEyes at Login": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Launch SafeEyes at Login"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تشغيل SafeEyes عند تسجيل الدخول"
+          }
+        }
+      }
+    },
+    "macOS requires user approval in System Settings for SafeEyes to launch at login.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS requires user approval in System Settings for SafeEyes to launch at login."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يتطلب macOS موافقة المستخدم في إعدادات النظام لتشغيل SafeEyes عند تسجيل الدخول."
+          }
+        }
+      }
+    },
+    "Open Login Items Settings": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Login Items Settings"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فتح إعدادات عناصر تسجيل الدخول"
+          }
+        }
+      }
+    },
+    "Language": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Language"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اللغة"
+          }
+        }
+      }
+    },
+    "System Default": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System Default"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "افتراضي النظام"
+          }
+        }
+      }
+    },
+    "English": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "English"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "English"
+          }
+        }
+      }
+    },
+    "العربية": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "العربية"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "العربية"
+          }
+        }
+      }
+    },
+    "Application language": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Application language"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لغة التطبيق"
+          }
+        }
+      }
+    },
+    "Restart Required": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restart Required"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة التشغيل مطلوبة"
+          }
+        }
+      }
+    },
+    "Please restart SafeEyes for language changes to take full effect across the entire application (including the Menu Bar).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please restart SafeEyes for language changes to take full effect across the entire application (including the Menu Bar)."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يرجى إعادة تشغيل SafeEyes لتطبيق تغييرات اللغة بالكامل على التطبيق (بما في ذلك شريط القوائم)."
+          }
+        }
+      }
+    },
+    "Restart Now": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restart Now"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة التشغيل الآن"
+          }
+        }
+      }
+    },
+    "Later": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Later"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لاحقاً"
+          }
+        }
+      }
+    },
+    "Restart the app to apply language changes to the Menu Bar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restart the app to apply language changes to the Menu Bar."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أعد تشغيل التطبيق لتطبيق تغييرات اللغة على شريط القوائم بالكامل."
+          }
+        }
+      }
+    },
+    "Reset": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة التعيين"
+          }
+        }
+      }
+    },
+    "Reset All Settings to Defaults": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset All Settings to Defaults"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة تعيين جميع الإعدادات للافتراضية"
+          }
+        }
+      }
+    },
+    "Reset all settings to their default values?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset all settings to their default values?"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هل تريد إعادة تعيين جميع الإعدادات إلى قيمها الافتراضية؟"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إلغاء"
+          }
+        }
+      }
+    },
+    "Launch SafeEyes at login": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Launch SafeEyes at login"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تشغيل SafeEyes عند تسجيل الدخول"
+          }
+        }
+      }
+    },
+    "Reset all settings to default values": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset all settings to default values"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة تعيين جميع الإعدادات للقيم الافتراضية"
+          }
+        }
+      }
+    },
+    "SafeEyes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeEyes"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeEyes"
+          }
+        }
+      }
+    },
+    "Version %@ (%@)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@ (%@)"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الإصدار %@ (%@)"
+          }
+        }
+      }
+    },
+    "Protect your eyes from eye strain with regular break reminders.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Protect your eyes from eye strain with regular break reminders."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "احمِ عينيك من إجهاد الشاشات مع تذكيرات الاستراحة المنتظمة."
+          }
+        }
+      }
+    },
+    "Links": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Links"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الروابط"
+          }
+        }
+      }
+    },
+    "SafeEyes on GitHub": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeEyes on GitHub"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeEyes على GitHub"
+          }
+        }
+      }
+    },
+    "Open SafeEyes GitHub page": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open SafeEyes GitHub page"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فتح صفحة SafeEyes على GitHub"
+          }
+        }
+      }
+    },
+    "License": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "License"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الترخيص"
+          }
+        }
+      }
+    },
+    "GNU General Public License v3.0": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GNU General Public License v3.0"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رخصة جنو العمومية v3.0"
+          }
+        }
+      }
+    },
+    "SafeEyes is free software. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeEyes is free software. You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برنامج SafeEyes هو برنامج مجاني. يمكنك إعادة توزيعه و/أو تعديله بموجب شروط رخصة جنو العمومية المنشورة من قِبل مؤسسة البرمجيات الحرة."
+          }
+        }
+      }
+    },
+    "SHORT BREAK": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SHORT BREAK"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحة قصيرة"
+          }
+        }
+      }
+    },
+    "LONG BREAK": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LONG BREAK"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحة طويلة"
+          }
+        }
+      }
+    },
+    "Short break active": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short break active"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحة قصيرة نشطة"
+          }
+        }
+      }
+    },
+    "Long break active": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long break active"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "استراحة طويلة نشطة"
+          }
+        }
+      }
+    },
+    "Break countdown timer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Break countdown timer"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مؤقت تنازلي للاستراحة"
+          }
+        }
+      }
+    },
+    "Strict Mode Active": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strict Mode Active"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الوضع الصارم مفعّل"
+          }
+        }
+      }
+    },
+    "Strict mode on": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strict mode on"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الوضع الصارم مفعّل"
+          }
+        }
+      }
+    },
+    "Strict mode is active. Skipping and postponing are disabled.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strict mode is active. Skipping and postponing are disabled."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الوضع الصارم مفعّل. التخطي والتأجيل معطلان."
+          }
+        }
+      }
+    },
+    "Postpone": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Postpone"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأجيل"
+          }
+        }
+      }
+    },
+    "Postpone break": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Postpone break"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأجيل الاستراحة"
+          }
+        }
+      }
+    },
+    "Postpones the break for the configured duration": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Postpones the break for the configured duration"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تأجيل الاستراحة للمدة المحددة"
+          }
+        }
+      }
+    },
+    "Skip (Esc)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip (Esc)"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تخطي (Esc)"
+          }
+        }
+      }
+    },
+    "Skip": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تخطي"
+          }
+        }
+      }
+    },
+    "Skip break": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip break"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تخطي الاستراحة"
+          }
+        }
+      }
+    },
+    "Skips the current break. Can also press Escape.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skips the current break. Can also press Escape."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تخطي الاستراحة الحالية. يمكنك أيضاً الضغط على زر Escape."
+          }
+        }
+      }
+    },
+    "Rest Your Eyes": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rest Your Eyes"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أرح عينيك"
+          }
+        }
+      }
+    },
+    "seconds": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "seconds"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثوانٍ"
+          }
+        }
+      }
+    },
+    "remaining": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "remaining"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "متبقية"
+          }
+        }
+      }
+    },
+    "20-20-20 Rule": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "20-20-20 Rule"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قاعدة 20-20-20"
+          }
+        }
+      }
+    },
+    "Look at an object at least 20 feet away for 20 seconds to relax your eye muscles.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Look at an object at least 20 feet away for 20 seconds to relax your eye muscles."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انظر إلى شيء يبعد عنك 20 قدماً (6 أمتار) على الأقل لمدة 20 ثانية لإراحة عضلات عينيك."
+          }
+        }
+      }
+    },
+    "Blink Slowly": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blink Slowly"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ارمش ببطء"
+          }
+        }
+      }
+    },
+    "Close your eyes gently, pause for 2 seconds, then open slowly. Repeat 4 times.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close your eyes gently, pause for 2 seconds, then open slowly. Repeat 4 times."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أغلق عينيك بلطف، انتظر ثانيتين، ثم افتحهما ببطء. كرر ذلك 4 مرات."
+          }
+        }
+      }
+    },
+    "Eye Circles": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eye Circles"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دوائر بالعينين"
+          }
+        }
+      }
+    },
+    "Roll your eyes slowly in a circle clockwise, then switch to counter-clockwise.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roll your eyes slowly in a circle clockwise, then switch to counter-clockwise."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حرّك عينيك ببطء في دائرة مع اتجاه عقارب الساعة، ثم عكس اتجاه عقارب الساعة."
+          }
+        }
+      }
+    },
+    "Palming": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Palming"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تدفئة العينين بالكفين"
+          }
+        }
+      }
+    },
+    "Rub your hands together to warm your palms, then gently cup them over your closed eyes.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rub your hands together to warm your palms, then gently cup them over your closed eyes."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ادعك يديك معاً لتدفئة راحتيك، ثم ضعهما بلطف فوق عينيك المغلقتين دون ضغط."
+          }
+        }
+      }
+    },
+    "Near & Far Focus": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Near & Far Focus"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "التركيز القريب والبعيد"
+          }
+        }
+      }
+    },
+    "Hold your thumb 10 inches from your face. Focus on it for 5 seconds, then focus on a distant point.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hold your thumb 10 inches from your face. Focus on it for 5 seconds, then focus on a distant point."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ضع إبهامك على بعد 25 سم من وجهك وركز عليه لمدة 5 ثوانٍ، ثم ركز على نقطة بعيدة."
+          }
+        }
+      }
+    },
+    "Shoulder Rolls": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shoulder Rolls"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تدوير الكتفين"
+          }
+        }
+      }
+    },
+    "Roll your shoulders backward slowly 5 times, then forward 5 times to release tension.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roll your shoulders backward slowly 5 times, then forward 5 times to release tension."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دوّر كتفيك إلى الخلف ببطء 5 مرات، ثم إلى الأمام 5 مرات لتخفيف التوتر."
+          }
+        }
+      }
+    },
+    "Neck Stretch": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neck Stretch"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمديد الرقبة"
+          }
+        }
+      }
+    },
+    "Gently tilt your head toward your shoulder and hold for 10 seconds. Switch sides.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gently tilt your head toward your shoulder and hold for 10 seconds. Switch sides."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أمِل رأسك بلطف نحو كتفك واستمر لمدة 10 ثوانٍ، ثم كرر في الجانب الآخر."
+          }
+        }
+      }
+    },
+    "Stand and Walk": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stand and Walk"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قف وامشِ"
+          }
+        }
+      }
+    },
+    "Stand up, stretch your arms overhead, and walk around your room or office.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stand up, stretch your arms overhead, and walk around your room or office."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قف ومط ذراعيك فوق رأسك، وامشِ قليلاً في الغرفة أو المكتب."
+          }
+        }
+      }
+    },
+    "SafeEyes Break Notice": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SafeEyes Break Notice"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إشعار استراحة SafeEyes"
+          }
+        }
+      }
+    },
+    "%@ break will start in %ld seconds. Prepare to rest your eyes.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ break will start in %ld seconds. Prepare to rest your eyes."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ستبدأ استراحة %@ خلال %ld ثوانٍ. استعد لإراحة عينيك."
+          }
+        }
+      }
+    },
+    "Short": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قصيرة"
+          }
+        }
+      }
+    },
+    "Long": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "طويلة"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

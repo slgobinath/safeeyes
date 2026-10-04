@@ -335,7 +335,7 @@ class BreakQueue:
             name = _(break_config["name"])
             duration = break_config.get("duration", break_duration)
             image = break_config.get("image")
-            plugins = break_config.get("plugins", None)
+            plugins = break_config.get("plugins") or {}
             interval = break_config.get("interval", break_time)
 
             # Validate time value
