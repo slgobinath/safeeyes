@@ -28,6 +28,7 @@ import gi
 
 gi.require_version("Gio", "2.0")
 from gi.repository import Gio
+from gi.repository import GLib
 
 from safeeyes import utility
 from safeeyes.model import TrayAction
@@ -130,7 +131,10 @@ def __lock_screen_dbus(destination: str, path: str, method: str) -> None:
         interface_name=destination,
     )
 
-    dbus_proxy.call_sync(method, None, Gio.DBusCallFlags.NONE, -1)
+    try:
+        dbus_proxy.call_sync(method, None, Gio.DBusCallFlags.NONE, -1)
+    except GLib.Error:
+        logging.exception("Failed to lock the screen using D-Bus")
 
 
 def __lock_screen_later():
@@ -148,6 +152,11 @@ def __lock_screen_now() -> None:
         utility.execute_command(lock_screen_command)
     else:
         lock_screen_command()
+
+
+def __lock_screen_in_background() -> None:
+    """Lock the screen without blocking the GTK main loop."""
+    utility.start_thread(__lock_screen_now)
 
 
 def init(ctx, safeeyes_config, plugin_config):
@@ -194,7 +203,7 @@ def on_stop_break():
     min_seconds.
     """
     if user_locked_screen or (is_long_break and seconds_passed >= min_seconds):
-        __lock_screen_now()
+        __lock_screen_in_background()
 
 
 def get_tray_action(break_obj) -> list[TrayAction]:
@@ -203,7 +212,7 @@ def get_tray_action(break_obj) -> list[TrayAction]:
             "Lock screen now",
             tray_icon_path,
             "system-lock-screen",
-            __lock_screen_now,
+            __lock_screen_in_background,
             single_use=False,
         ),
         TrayAction.build(
