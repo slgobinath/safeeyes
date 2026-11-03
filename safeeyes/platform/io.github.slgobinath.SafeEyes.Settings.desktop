@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Safe Eyes Settings
+Comment=Configure Safe Eyes
+GenericName=RSI Prevention
+Exec=safeeyes -s
+Icon=io.github.slgobinath.SafeEyes
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Utility;
