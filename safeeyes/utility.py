@@ -71,6 +71,9 @@ LOCALE_PATH = os.path.join(BIN_DIRECTORY, "config/locale")
 SYSTEM_DESKTOP_FILE = os.path.join(
     BIN_DIRECTORY, "platform/io.github.slgobinath.SafeEyes.desktop"
 )
+SYSTEM_SETTINGS_DESKTOP_FILE = os.path.join(
+    BIN_DIRECTORY, "platform/io.github.slgobinath.SafeEyes.Settings.desktop"
+)
 SYSTEM_ICONS = os.path.join(BIN_DIRECTORY, "platform/icons")
 DESKTOP_ENVIRONMENT = None
 IS_WAYLAND = False
@@ -460,6 +463,9 @@ def initialize_platform():
     desktop_entry = os.path.join(
         applications_dir_path, "io.github.slgobinath.SafeEyes.desktop"
     )
+    settings_desktop_entry = os.path.join(
+        applications_dir_path, "io.github.slgobinath.SafeEyes.Settings.desktop"
+    )
 
     # Create the folder if not exist
     mkdir(icons_dir_path)
@@ -482,6 +488,28 @@ def initialize_platform():
             os.symlink(SYSTEM_DESKTOP_FILE, desktop_entry)
         except OSError:
             logging.error("Failed to create desktop entry at %s" % desktop_entry)
+
+    # Create a desktop entry for the settings
+    if not os.path.exists(
+        os.path.join(
+            sys.prefix,
+            "share/applications/io.github.slgobinath.SafeEyes.Settings.desktop",
+        )
+    ):
+        # Create the folder if not exist
+        mkdir(applications_dir_path)
+
+        # Remove existing file
+        delete(settings_desktop_entry)
+
+        # Create a link
+        logging.debug(f"Create desktop entry at {settings_desktop_entry}")
+        try:
+            os.symlink(SYSTEM_SETTINGS_DESKTOP_FILE, settings_desktop_entry)
+        except OSError:
+            logging.error(
+                "Failed to create desktop entry at %s" % settings_desktop_entry
+            )
 
     # Add links for all icons
     for path, _dirnames, filenames in os.walk(SYSTEM_ICONS):
