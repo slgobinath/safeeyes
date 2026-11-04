@@ -6,8 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-05-20 15:11+0000\n"
-"Last-Translator: \"Omer I.S.\" <omeritzicschwartz@gmail.com>\n"
+"PO-Revision-Date: 2026-11-04 07:51+0000\n"
+"Last-Translator: \"Omer I.S.\" <omeritzics@users.noreply.hosted.weblate.org>"
+"\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/safe-eyes/"
 "translations/he/>\n"
 "Language: he\n"
@@ -15,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 2026.6.dev0\n"
+"X-Generator: Weblate 2026.11.1.dev0\n"
 
 # Short break
 msgid "Gently close your eyes"
@@ -119,7 +120,7 @@ msgstr "start Safe Eyes in debug mode"
 
 # Commandline arg description
 msgid "print the status of running Safe Eyes instance and exit"
-msgstr "הצגת מצב הריצה של העותק של „Safe Eyes” ויציאה"
+msgstr "הצגת מצב הריצה של עותק „Safe Eyes” ויציאה"
 
 # Status message
 msgid "Safe Eyes is not running"
@@ -176,7 +177,7 @@ msgstr "משך דחייה (בדקות)"
 
 # Settings dialog
 msgid "Show breaks in random order"
-msgstr "להציג הפסקות בסדר אקראי"
+msgstr "הצגת הפסקות בסדר אקראי"
 
 # Settings dialog
 msgid "Strict break (No way to skip breaks)"
@@ -336,15 +337,15 @@ msgstr "צליל התראה"
 
 # plugin/audiblealert
 msgid "Play audible alert before and after breaks"
-msgstr "להשמיע צלצול לפני ואחרי הפסקות"
+msgstr "השמעת צלצול לפני ואחרי הפסקות"
 
 # plugin/audiblealert
 msgid "Play audible alert before breaks"
-msgstr "להשמיע צלצול התראה לפני הפסקות"
+msgstr "השמעת צלצול התראה לפני הפסקות"
 
 # plugin/audiblealert
 msgid "Play audible alert after breaks"
-msgstr "להשמיע צלצול התראה אחרי הפסקות"
+msgstr "השמעת צלצול התראה אחרי הפסקות"
 
 # plugin/donotdisturb
 msgid "Do Not Disturb"
@@ -352,7 +353,7 @@ msgstr "לא להפריע"
 
 # plugin/donotdisturb
 msgid "Skip break if the active window is in fullscreen mode"
-msgstr "לדלג על הפסקה אם החלון הפעיל הוא על כל המסך"
+msgstr "דילוג על הפסקות אם החלון הפעיל מכסה את כל המסך"
 
 # plugin/donotdisturb
 msgid "Do not interrupt these windows anytime"
@@ -376,7 +377,7 @@ msgstr "סטטיסטיקת בריאות"
 
 # plugin/healthstats
 msgid "Show statistics based on how you use Safe Eyes"
-msgstr "להציג סטטיסטיקה על אופן השימוש שלך בהגנה על העיניים"
+msgstr "הצגת סטטיסטיקה של אופן השימוש שלך ב־Safe Eyes"
 
 # plugin/healthstats
 msgid "Statistics reset interval (cron expression)"
@@ -388,7 +389,7 @@ msgstr "התראה"
 
 # plugin/notification
 msgid "Show a system notification before breaks"
-msgstr "להציג התראות מערכת לפני הפסקות"
+msgstr "הצגת התראות מערכת לפני הפסקות"
 
 # plugin/notification
 #, python-format
@@ -406,7 +407,7 @@ msgstr "שומר מסך"
 
 # plugin/screensaver
 msgid "Lock the screen after long breaks by starting screensaver/screen-lock"
-msgstr "לנעול את המסך אחרי הפסקות ארוכות על ידי הפעלת שומר מסך/נעילת מסך"
+msgstr "נעילת המסך לאחר הפסקות ארוכות בעזרת הפעלת שומר מסך/נעילת המסך"
 
 # plugin/screensaver
 msgid "Custom screensaver or screen-lock command"
@@ -426,7 +427,7 @@ msgstr "השהיה חכמה"
 
 # plugin/smartpause
 msgid "Pause Safe Eyes if the system is idle"
-msgstr "להשהות את ההגנה על העיניים אם המערכת בהמתנה"
+msgstr "השהיית פעילות Safe Eyes אם המערכת בהמתנה"
 
 # plugin/smartpause
 msgid "Minimum idle time to pause Safe Eyes (in seconds)"
@@ -541,7 +542,7 @@ msgstr "בקרת מדיה"
 
 # plugin/mediacontrol
 msgid "Pause media players from the break screen"
-msgstr "להשהות נגני מדיה ממסך ההפסקה"
+msgstr "השהיית נגני מדיה מתוך מסך ההפסקה"
 
 # plugin/mediacontrol
 msgid "Pause media"
@@ -634,7 +635,7 @@ msgid "Please install one of the command-line tools: %s"
 msgstr "נא להתקין את אחד מכלי שורת הפקודה: %s"
 
 msgid "Skipping/postponing disabled period (in seconds)"
-msgstr "זמן להמתנה לפני שיהיה אפשר לדלג על הפסקות או לדחות אותן (בשניות)"
+msgstr "זמן המתנה לפני שניתן לדלג על הפסקות או לדחות אותן (בשניות)"
 
 msgid "take a short break now"
 msgstr "זה הזמן לקחת הפסקה קצרה"
@@ -646,7 +647,7 @@ msgid "Fade in when breaks start"
 msgstr "כניסה הדרגתית למסך ההפסקה בעת התחלתה"
 
 msgid "Fade in duration (in milliseconds)"
-msgstr "משך זמן עמעום (במילישניות)"
+msgstr "משך זמן להדרגה (במילי־שניות)"
 
 # Commandline arg description
 #~ msgid "print the status of running safeeyes instance and exit"
