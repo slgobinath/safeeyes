@@ -268,7 +268,10 @@ class SettingsDialog(Gtk.ApplicationWindow):
             if new_is_short:
                 break_list = self.config.get("short_breaks")
 
-            break_list[break_list.index(old_break_config)] = new_break_config
+            index = next(
+                i for i, config in enumerate(break_list) if config is old_break_config
+            )
+            break_list[index] = new_break_config
 
         break_item.update_break_name()
 
