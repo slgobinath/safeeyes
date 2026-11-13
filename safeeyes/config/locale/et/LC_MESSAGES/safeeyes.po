@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-04-24 02:44+0000\n"
+"PO-Revision-Date: 2026-11-14 08:35+0000\n"
 "Last-Translator: Priit Jõerüüt <jrthwlate@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/safe-eyes/"
 "translations/et/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17.1-dev\n"
+"X-Generator: Weblate 2026.12.dev0\n"
 
 # Short break
 msgid "Gently close your eyes"
@@ -655,19 +655,19 @@ msgid "Fade in duration (in milliseconds)"
 msgstr "Ristsulatuse kestus (millisekundites)"
 
 msgid "Keep editing"
-msgstr ""
+msgstr "Jätka muutmist"
 
 msgid "There are unsaved changes. Do you want to save them?"
-msgstr ""
+msgstr "Sul on salvestamata muudatusi. Kas sooviksid need salvestada?"
 
 msgid "OK"
-msgstr ""
+msgstr "Sobib"
 
 msgid "Apply"
-msgstr ""
+msgstr "Rakenda"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Katkesta"
 
 # Commandline arg description
 #~ msgid "print the status of running safeeyes instance and exit"
