@@ -6,8 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-04-21 03:28+0000\n"
-"Last-Translator: Archisman Panigrahi <apandada1@gmail.com>\n"
+"PO-Revision-Date: 2026-11-13 07:17+0000\n"
+"Last-Translator: Archisman Panigrahi <archisman-"
+"panigrahi@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Bengali <https://hosted.weblate.org/projects/safe-eyes/"
 "translations/bn/>\n"
 "Language: bn\n"
@@ -15,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
-"X-Generator: Weblate 5.17.1-dev\n"
+"X-Generator: Weblate 2026.12.dev0\n"
 
 # Short break
 msgid "Gently close your eyes"
@@ -650,19 +651,19 @@ msgid "Fade in duration (in milliseconds)"
 msgstr "ফুটে ওঠার সময় (মিলিসেকেন্ডে)"
 
 msgid "Keep editing"
-msgstr ""
+msgstr "পরিবর্তন চালিয়ে যান"
 
 msgid "There are unsaved changes. Do you want to save them?"
-msgstr ""
+msgstr "পরিবর্তন সংরক্ষণ করা হয়নি। আপনি কি এগুলি সংরক্ষণ করতে চান?"
 
 msgid "OK"
-msgstr ""
+msgstr "আচ্ছা"
 
 msgid "Apply"
-msgstr ""
+msgstr "প্রয়োগ করুন"
 
 msgid "Cancel"
-msgstr ""
+msgstr "বাতিল"
 
 # Commandline arg description
 #~ msgid "print the status of running safeeyes instance and exit"
