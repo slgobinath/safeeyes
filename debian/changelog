@@ -1,3 +1,9 @@
+safeeyes (3.6.0) noble; urgency=medium
+
+  * apply/save in settings and various bugfixes and updated translations
+
+ -- Archisman Panigrahi <apandada1@gmail.com>  Fri, 13 Nov 2026 07:23:01 +0000
+
 safeeyes (3.5.1) noble; urgency=medium
 
   * Fix smartpause with pywayland
