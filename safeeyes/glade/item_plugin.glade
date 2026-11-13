@@ -99,6 +99,7 @@
             <property name="can-focus">1</property>
             <property name="halign">end</property>
             <property name="valign">center</property>
+            <signal name="notify::active" handler="on_switch_enable_activated" swapped="no"/>
           </object>
         </child>
         <child>
