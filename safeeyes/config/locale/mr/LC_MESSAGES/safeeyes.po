@@ -642,6 +642,21 @@ msgstr ""
 msgid "Fade in duration (in milliseconds)"
 msgstr ""
 
+msgid "Keep editing"
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them?"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
 # Commandline arg description
 #~ msgid "print the status of running safeeyes instance and exit"
 #~ msgstr "सुरक्षित डोळ्यांची उदाहरणे चालविण्याची स्थिती प्रिंट करा आणि बाहेर पडा"

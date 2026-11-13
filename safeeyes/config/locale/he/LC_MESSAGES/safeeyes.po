@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: 2026-11-04 07:51+0000\n"
-"Last-Translator: \"Omer I.S.\" <omeritzics@users.noreply.hosted.weblate.org>"
-"\n"
+"Last-Translator: \"Omer I.S.\" "
+"<omeritzics@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Hebrew <https://hosted.weblate.org/projects/safe-eyes/"
 "translations/he/>\n"
 "Language: he\n"
@@ -648,6 +648,21 @@ msgstr "כניסה הדרגתית למסך ההפסקה בעת התחלתה"
 
 msgid "Fade in duration (in milliseconds)"
 msgstr "משך זמן להדרגה (במילי־שניות)"
+
+msgid "Keep editing"
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them?"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
 
 # Commandline arg description
 #~ msgid "print the status of running safeeyes instance and exit"

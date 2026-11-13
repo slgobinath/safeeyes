@@ -649,6 +649,21 @@ msgstr "আস্তে আস্তে বিরতি ফুটে উঠু�
 msgid "Fade in duration (in milliseconds)"
 msgstr "ফুটে ওঠার সময় (মিলিসেকেন্ডে)"
 
+msgid "Keep editing"
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them?"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
 # Commandline arg description
 #~ msgid "print the status of running safeeyes instance and exit"
 #~ msgstr "চলমান Safe Eyes-এর অবস্থা দেখিয়ে বেরিয়ে যান"

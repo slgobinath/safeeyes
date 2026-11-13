@@ -654,6 +654,21 @@ msgstr "Puhepausi alates ristsulata rakenduse vaade"
 msgid "Fade in duration (in milliseconds)"
 msgstr "Ristsulatuse kestus (millisekundites)"
 
+msgid "Keep editing"
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them?"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
 # Commandline arg description
 #~ msgid "print the status of running safeeyes instance and exit"
 #~ msgstr "väljasta hetkel töötava Safe Eyes instantsi staatus ja välju"
