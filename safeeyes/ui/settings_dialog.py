@@ -372,11 +372,11 @@ class SettingsDialog(Gtk.ApplicationWindow):
         if not self.initializing:
             self.config.set(
                 "postpone_unit",
-                # the model is a GtkStringList - so get_selected_item will return a
-                # StringObject
-                typing.cast(
-                    Gtk.StringObject, self.dropdown_postpone_unit.get_selected_item()
-                ).get_string(),
+                # The items are translated, so save by position, matching __initialize:
+                # 0 is minutes, 1 is seconds.
+                "seconds"
+                if self.dropdown_postpone_unit.get_selected() == 1
+                else "minutes",
             )
             self._set_apply_sensitive()
 
