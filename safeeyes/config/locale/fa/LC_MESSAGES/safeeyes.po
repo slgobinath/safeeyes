@@ -6,8 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-04-20 17:14+0000\n"
-"Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
+"PO-Revision-Date: 2026-11-14 16:15+0000\n"
+"Last-Translator: Danial Behzadi "
+"<danialbehzadi@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Persian <https://hosted.weblate.org/projects/safe-eyes/"
 "translations/fa/>\n"
 "Language: fa\n"
@@ -15,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.17.1-dev\n"
+"X-Generator: Weblate 2026.12.dev0\n"
 
 # Short break
 msgid "Gently close your eyes"
@@ -647,19 +648,19 @@ msgid "Fade in duration (in milliseconds)"
 msgstr ""
 
 msgid "Keep editing"
-msgstr ""
+msgstr "ادامهٔ ویرایش"
 
 msgid "There are unsaved changes. Do you want to save them?"
 msgstr ""
 
 msgid "OK"
-msgstr ""
+msgstr "قبول"
 
 msgid "Apply"
-msgstr ""
+msgstr "اِعمال"
 
 msgid "Cancel"
-msgstr ""
+msgstr "لغو"
 
 # Commandline arg description
 #~ msgid "print the status of running safeeyes instance and exit"
