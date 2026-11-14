@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-04-21 12:12+0000\n"
-"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
+"PO-Revision-Date: 2026-11-14 12:09+0000\n"
+"Last-Translator: Heimen Stoffels <vistaus@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/safe-eyes/"
 "translations/nl/>\n"
 "Language: nl\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17.1-dev\n"
+"X-Generator: Weblate 2026.12.dev0\n"
 
 # Short break
 msgid "Gently close your eyes"
@@ -661,19 +661,19 @@ msgid "Fade in duration (in milliseconds)"
 msgstr "Vervaagduur (in milliseconden)"
 
 msgid "Keep editing"
-msgstr ""
+msgstr "Doorgaan met bewerken"
 
 msgid "There are unsaved changes. Do you want to save them?"
-msgstr ""
+msgstr "Er zijn niet-opgeslagen wijzigingen. Wil je ze opslaan?"
 
 msgid "OK"
-msgstr ""
+msgstr "Oké"
 
 msgid "Apply"
-msgstr ""
+msgstr "Toepassen"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Annuleren"
 
 # Commandline arg description
 #~ msgid "print the status of running safeeyes instance and exit"
