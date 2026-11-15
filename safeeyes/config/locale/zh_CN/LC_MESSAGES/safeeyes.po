@@ -643,6 +643,21 @@ msgstr "休息开始时淡入"
 msgid "Fade in duration (in milliseconds)"
 msgstr "淡入时长（毫秒）"
 
+msgid "Keep editing"
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them?"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
 # Settings dialog
 #~ msgid "Keyboard shortcuts disabled period (in seconds)"
 #~ msgstr "禁用键盘快捷键的时长（秒）"

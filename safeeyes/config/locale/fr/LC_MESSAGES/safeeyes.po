@@ -663,6 +663,21 @@ msgstr "Fondu au début des pauses"
 msgid "Fade in duration (in milliseconds)"
 msgstr "Durée du fondu (en millisecondes)"
 
+msgid "Keep editing"
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them?"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
 # Commandline arg description
 #~ msgid "print the status of running safeeyes instance and exit"
 #~ msgstr "imprimer l’état de l’instance Safe Eyes en cours et fermer"

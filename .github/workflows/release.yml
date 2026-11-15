@@ -13,10 +13,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GH_API_SECRET }}
 
-      - name: Set up Python 3.10
+      - name: Set up Python 3.11
         uses: actions/setup-python@v3
         with:
-          python-version: "3.10"
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |

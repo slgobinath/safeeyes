@@ -1,4 +1,5 @@
 safeeyes/platform/io.github.slgobinath.SafeEyes.desktop usr/share/applications
+safeeyes/platform/io.github.slgobinath.SafeEyes.Settings.desktop usr/share/applications
 safeeyes/platform/icons/hicolor/128x128/apps/io.github.slgobinath.SafeEyes.png usr/share/icons/hicolor/128x128/apps
 safeeyes/platform/icons/hicolor/16x16/apps/io.github.slgobinath.SafeEyes.png usr/share/icons/hicolor/16x16/apps
 safeeyes/platform/icons/hicolor/16x16/status/io.github.slgobinath.SafeEyes-disabled.png usr/share/icons/hicolor/16x16/status

@@ -1,4 +1,4 @@
-target-version = "py310"
+target-version = "py311"
 
 [lint]
 select = ["E", "W", "F", "D2", "D3", "D4"]

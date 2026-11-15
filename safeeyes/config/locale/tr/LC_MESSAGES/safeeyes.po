@@ -651,6 +651,21 @@ msgstr ""
 msgid "Fade in duration (in milliseconds)"
 msgstr ""
 
+msgid "Keep editing"
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them?"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
 # Settings dialog
 #~ msgid "Keyboard shortcuts disabled period (in seconds)"
 #~ msgstr "Klavye kısayollarının etkisiz kalma süresi (saniye)"

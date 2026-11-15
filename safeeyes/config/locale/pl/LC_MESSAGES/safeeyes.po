@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-04-19 21:07+0000\n"
-"Last-Translator: Jakub Jurczyk <pandetthe@gmail.com>\n"
+"PO-Revision-Date: 2026-09-29 11:51+0000\n"
+"Last-Translator: Arkadiusz Cieplucha <aciep@posteo.net>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/safe-eyes/"
 "translations/pl/>\n"
 "Language: pl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.17.1-dev\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 # Short break
 msgid "Gently close your eyes"
@@ -655,9 +655,24 @@ msgid "take a long break now"
 msgstr "weź długą przerwę teraz"
 
 msgid "Fade in when breaks start"
-msgstr ""
+msgstr "Płynne wyświetlanie się ekranu przerwy"
 
 msgid "Fade in duration (in milliseconds)"
+msgstr "Czas płynnego wyświetlania (milisekundy)"
+
+msgid "Keep editing"
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them?"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Cancel"
 msgstr ""
 
 # Commandline arg description

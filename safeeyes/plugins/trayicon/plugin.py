@@ -302,7 +302,7 @@ class DBusMenuService(DBusService):
 
         ret = (
             self.revision,
-            (0, {"children-display": GLib.Variant("s", "submenu")}, children),
+            (parent_id, {"children-display": GLib.Variant("s", "submenu")}, children),
         )
 
         return ret

@@ -661,6 +661,21 @@ msgstr "Prasidėjus pertraukai laipsniškai ryškėti"
 msgid "Fade in duration (in milliseconds)"
 msgstr "Laipsniško ryškėjimo trukmė (milisekundėmis)"
 
+msgid "Keep editing"
+msgstr ""
+
+msgid "There are unsaved changes. Do you want to save them?"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
 # Commandline arg description
 #~ msgid "print the status of running safeeyes instance and exit"
 #~ msgstr "išvesti paleisto Safe Eyes egzemplioriaus būseną ir išeiti"
