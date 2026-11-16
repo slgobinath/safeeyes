@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-04-25 17:16+0000\n"
+"PO-Revision-Date: 2026-11-16 14:53+0000\n"
 "Last-Translator: Sketch6580 <sketch6580@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/safe-eyes/translations/zh_Hans/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.17.1-dev\n"
+"X-Generator: Weblate 2026.12.dev0\n"
 
 # Short break
 msgid "Gently close your eyes"
@@ -200,7 +200,7 @@ msgstr "重置"
 
 # Settings dialog
 msgid "Are you sure you want to reset all settings to default?"
-msgstr "确定要删除当前设置，重置为默认设置吗？"
+msgstr "确定要将所有设置重置为默认设置吗？"
 
 # Settings dialog
 msgid "Options"
@@ -224,7 +224,7 @@ msgstr "确定要删除此休息吗？"
 
 # Settings dialog
 msgid "You can't undo this action."
-msgstr "无法撤销此动作。"
+msgstr "您无法撤销此操作。"
 
 # Settings dialog
 msgid "Break"
@@ -644,19 +644,19 @@ msgid "Fade in duration (in milliseconds)"
 msgstr "淡入时长（毫秒）"
 
 msgid "Keep editing"
-msgstr ""
+msgstr "继续编辑"
 
 msgid "There are unsaved changes. Do you want to save them?"
-msgstr ""
+msgstr "有未保存的更改。要保存更改吗？"
 
 msgid "OK"
-msgstr ""
+msgstr "确定"
 
 msgid "Apply"
-msgstr ""
+msgstr "应用"
 
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 # Settings dialog
 #~ msgid "Keyboard shortcuts disabled period (in seconds)"
