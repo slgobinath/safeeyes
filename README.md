@@ -83,6 +83,7 @@ sudo emerge -av x11-misc/safeeyes
 ```bash
 sudo apt-get install safeeyes
 ```
+Since the version on the official Debian repository is outdated, please consider downloading and manually installing the latest .deb package from [GitHub Releases](https://github.com/slgobinath/safeeyes/releases/latest).
 
 ### Fedora
 
@@ -112,6 +113,8 @@ sudo apk add safeeyes
 ```
 sudo apt install safeeyes
 ```
+Since the version on the official Debian repository is outdated, please consider downloading and manually installing the latest .deb package from [GitHub Releases](https://github.com/slgobinath/safeeyes/releases/latest).
+
 While no tray icon is available, if you run the app, it will function in the background and will show breaks as usual. You can also change the settings by clicking on the Safe Eyes icon from the menu while the app is running, or by running the command `safeeyes -s`.
 
 ### Flatpak
