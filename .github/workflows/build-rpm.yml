@@ -1,0 +1,98 @@
+name: Build RPM Package
+
+on:
+  pull_request:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-rpm:
+    name: Build RPM Package
+    runs-on: ubuntu-latest
+    # The spec relies on Fedora-specific macros (%pypi_source, %pyproject_*)
+    # and packages (python3-pywayland, ffmpeg-free), so build in a Fedora
+    # container rather than on the Ubuntu host.
+    container:
+      image: fedora:latest
+
+    steps:
+      - name: Install git (needed by actions/checkout in a minimal container)
+        run: dnf -y install git
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          dnf -y install \
+            rpm-build rpmdevtools pyproject-rpm-macros \
+            python3-devel python3-pip python3-setuptools python3-wheel \
+            python3-gobject python3-babel python3-packaging python3-xlib \
+            python3-croniter python3-pywayland \
+            cairo-gobject-devel gobject-introspection-devel \
+            gtk4 libnotify desktop-file-utils gettext curl
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -1)"
+          fi
+          if [ -z "$VERSION" ]; then
+            echo "Could not determine version" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Building RPM for version $VERSION"
+
+      - name: Prepare rpmbuild tree and spec
+        run: |
+          set -euxo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          rpmdev-setuptree
+
+          # Keep the spec version/changelog in sync with the release tag or
+          # pyproject.toml so the source archive and metadata always match.
+          sed -i "s/^Version:.*/Version:        ${VERSION}/" rpm/python-safeeyes.spec
+          sed -i -E "s/ - [0-9]+\.[0-9]+\.[0-9]+-1/ - ${VERSION}-1/" rpm/python-safeeyes.spec
+          cp rpm/python-safeeyes.spec "$HOME/rpmbuild/SPECS/"
+
+          # Source: uses %pypi_source, which points at this PyPI archive.
+          curl -fsSL \
+            -o "$HOME/rpmbuild/SOURCES/safeeyes-${VERSION}.tar.gz" \
+            "https://files.pythonhosted.org/packages/source/s/safeeyes/safeeyes-${VERSION}.tar.gz"
+
+      - name: Build RPM
+        run: |
+          rpmbuild -ba "$HOME/rpmbuild/SPECS/python-safeeyes.spec"
+
+      - name: Collect packages
+        run: |
+          mkdir -p rpm-dist
+          cp "$HOME"/rpmbuild/RPMS/noarch/*.rpm rpm-dist/
+          cp "$HOME"/rpmbuild/SRPMS/*.rpm rpm-dist/
+          ls -lh rpm-dist/
+
+      - name: Upload binary RPM to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          # Only ship the installable noarch RPM on the release page;
+          # the SRPM is still produced and saved as a workflow artifact below.
+          files: "rpm-dist/*.noarch.rpm"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Save RPMs as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rpm-packages
+          path: |
+            rpm-dist/*.noarch.rpm
+            rpm-dist/*.src.rpm
