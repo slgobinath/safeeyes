@@ -2,7 +2,6 @@ name: Build RPM Package
 
 on:
   pull_request:
-  push:
   release:
     types: [published]
   workflow_dispatch:
@@ -80,11 +79,13 @@ jobs:
           cp "$HOME"/rpmbuild/SRPMS/*.rpm rpm-dist/
           ls -lh rpm-dist/
 
-      - name: Upload RPMs to GitHub Release
+      - name: Upload binary RPM to GitHub Release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: "rpm-dist/*"
+          # Only ship the installable noarch RPM on the release page;
+          # the SRPM is still produced and saved as a workflow artifact below.
+          files: "rpm-dist/*.noarch.rpm"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -92,4 +93,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: rpm-packages
-          path: "rpm-dist/*"
+          path: |
+            rpm-dist/*.noarch.rpm
+            rpm-dist/*.src.rpm
