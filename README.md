@@ -83,16 +83,19 @@ sudo emerge -av x11-misc/safeeyes
 ```bash
 sudo apt-get install safeeyes
 ```
+Since the version on the official Debian repository is outdated, please consider downloading and manually installing the latest .deb package from [GitHub Releases](https://github.com/slgobinath/safeeyes/releases/latest).
 
-### Fedora
+### Fedora and RHEL
 
-You can install with `pip`
-```bash
-pip3 install --user safeeyes
+The [official COPR build](https://copr.fedorainfracloud.org/coprs/apandada1/safeeyes/) for safeeyes hosts the latest version.
 ```
-For smartpause in Wayland, install the `python3-pywayland` package (in case the installer does not automatically install it as a dependency). For smart pause plugin in X11, you may have to install the latest xprintidle from: [alonid/xprintidle](https://copr.fedorainfracloud.org/coprs/alonid/xprintidle/).
+sudo dnf copr enable apandada1/safeeyes
+sudo dnf install safeeyes
+```
 
-Alternatively, use the [Flatpak version](https://github.com/slgobinath/safeeyes?tab=readme-ov-file#flatpak), which comes preinstalls with dependencies and features automatic updates.
+Alternatively, you can download the prebuilt RPM package from [GitHub Releases](https://github.com/slgobinath/safeeyes/releases/latest).
+
+For smart pause plugin in X11, you may have to install the latest xprintidle from: [alonid/xprintidle](https://copr.fedorainfracloud.org/coprs/alonid/xprintidle/). This is not required for Wayland.
 
 ### OpenSUSE Tumbleweed
 
@@ -112,6 +115,8 @@ sudo apk add safeeyes
 ```
 sudo apt install safeeyes
 ```
+Since the version on the official Debian repository is outdated, please consider downloading and manually installing the latest .deb package from [GitHub Releases](https://github.com/slgobinath/safeeyes/releases/latest).
+
 While no tray icon is available, if you run the app, it will function in the background and will show breaks as usual. You can also change the settings by clicking on the Safe Eyes icon from the menu while the app is running, or by running the command `safeeyes -s`.
 
 ### Flatpak

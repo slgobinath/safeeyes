@@ -33,6 +33,8 @@ wheels/
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
+# Keep our Fedora RPM spec file (the generic *.spec ignore above would hide it)
+!rpm/*.spec
 
 # Installer logs
 pip-log.txt
