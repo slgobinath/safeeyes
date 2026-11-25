@@ -85,7 +85,7 @@ sudo apt-get install safeeyes
 ```
 Since the version on the official Debian repository is outdated, please consider downloading and manually installing the latest .deb package from [GitHub Releases](https://github.com/slgobinath/safeeyes/releases/latest).
 
-### Fedora
+### Fedora and RHEL
 
 The [official COPR build](https://copr.fedorainfracloud.org/coprs/apandada1/safeeyes/) for safeeyes hosts the latest version.
 ```
