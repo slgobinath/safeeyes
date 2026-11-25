@@ -87,11 +87,15 @@ Since the version on the official Debian repository is outdated, please consider
 
 ### Fedora
 
-Download the prebuilt RPM package from [GitHub Releases](https://github.com/slgobinath/safeeyes/releases/latest).
+The [official COPR build](https://copr.fedorainfracloud.org/coprs/apandada1/safeeyes/) for safeeyes hosts the latest version.
+```
+sudo dnf copr enable apandada1/safeeyes
+sudo dnf install safeeyes
+```
 
-For smart pause plugin in X11, you may have to install the latest xprintidle from: [alonid/xprintidle](https://copr.fedorainfracloud.org/coprs/alonid/xprintidle/).
+Alternatively, you can download the prebuilt RPM package from [GitHub Releases](https://github.com/slgobinath/safeeyes/releases/latest).
 
-Alternatively, use the [Flatpak version](https://github.com/slgobinath/safeeyes?tab=readme-ov-file#flatpak), which comes preinstalls with dependencies and features automatic updates.
+For smart pause plugin in X11, you may have to install the latest xprintidle from: [alonid/xprintidle](https://copr.fedorainfracloud.org/coprs/alonid/xprintidle/). This is not required for Wayland.
 
 ### OpenSUSE Tumbleweed
 
