@@ -2,7 +2,7 @@
     "meta": {
         "name": "Do Not Disturb",
         "description": "Skip break if the active window is in fullscreen mode",
-        "version": "0.0.2"
+        "version": "0.0.3"
     },
     "dependencies": {
         "python_modules": [],
