@@ -58,6 +58,8 @@ Summary:        %{summary}
 Requires: libnotify
 Requires: (ffmpeg-free or pipewire-utils)
 Requires: python3-pywayland
+# for healthstats plugin (optional)
+Recommends: python3-croniter
 
 %description -n python3-safeeyes %_description
 
