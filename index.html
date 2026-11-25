@@ -136,14 +136,12 @@ sudo apt install safeeyes</code></pre>
                     
                     <div class="tab-pane" id="fedora">
                         <h3>Fedora</h3>
-                        <p>You can use pip to install safeeyes on Fedora</p>
+                        <p>You can use COPR to install safeeyes on Fedora</p>
                         <div class="code-block">
-                            <pre><code>sudo dnf install python-pip
-pip3 install --user safeeyes</code></pre>
+                            <pre><code>sudo dnf copr enable -y apandada1/safeeyes && sudo dnf install -y safeeyes</code></pre>
                             <button class="copy-btn" data-clipboard-target="#fedora-code">Copy</button>
                         </div>
                         <p>For smart pause plugin, you may have to install the latest xprintidle from: <a href="https://copr.fedorainfracloud.org/coprs/alonid/xprintidle/" target="_blank">alonid/xprintidle</a></p>
-                        <p>Alternatively install from Flathub. The flatpak package comes with preinstalled dependencies and features automatic updates.</p>
                         <p>We are looking for a native Fedora package maintainer.</p>
                     </div>
 
