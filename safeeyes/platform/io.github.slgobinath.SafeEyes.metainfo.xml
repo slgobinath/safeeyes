@@ -55,6 +55,12 @@
     <url type="vcs-browser">https://github.com/slgobinath/safeeyes</url>
 
     <releases>
+        <release version="3.6.2" date="2026-11-25">
+            <url>https://github.com/slgobinath/safeeyes/releases/tag/v3.6.2</url>
+            <description>
+                <p>translation update</p>
+            </description>
+        </release>
         <release version="3.6.1" date="2026-11-15">
             <url>https://github.com/slgobinath/safeeyes/releases/tag/v3.6.1</url>
             <description>
