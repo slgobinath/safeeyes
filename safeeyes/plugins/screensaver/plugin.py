@@ -30,9 +30,10 @@ gi.require_version("Gio", "2.0")
 from gi.repository import Gio
 
 from safeeyes import utility
+from safeeyes.context import Context
 from safeeyes.model import TrayAction
 
-context = None
+context: typing.Optional[Context] = None
 is_long_break: bool = False
 user_locked_screen = False
 lock_screen_command: typing.Union[list[str], typing.Callable[[], None], None] = None
@@ -60,6 +61,22 @@ def __lock_screen_command() -> typing.Union[list[str], typing.Callable[[], None]
     """
     desktop_session = os.environ.get("DESKTOP_SESSION")
     current_desktop = os.environ.get("XDG_CURRENT_DESKTOP")
+    # Plasma sometimes leaves DESKTOP_SESSION unset and only exports these.
+    kde_full_session = os.environ.get("KDE_FULL_SESSION") == "true"
+    current_desktop_is_kde = (
+        current_desktop is not None and "kde" in current_desktop.lower()
+    )
+
+    def kde_lock_screen() -> None:
+        # Note that this is unfortunately a non-standard KDE extension.
+        # See https://gitlab.gnome.org/GNOME/gnome-settings-daemon/-/issues/632
+        # for details.
+        __lock_screen_dbus(
+            destination="org.freedesktop.ScreenSaver",
+            path="/ScreenSaver",
+            method="Lock",
+        )
+
     if desktop_session is not None:
         desktop_session = desktop_session.lower()
         if (
@@ -87,16 +104,10 @@ def __lock_screen_command() -> typing.Union[list[str], typing.Callable[[], None]
             desktop_session == "kde"
             or "plasma" in desktop_session
             or desktop_session.startswith("kubuntu")
-            or os.environ.get("KDE_FULL_SESSION") == "true"
+            or kde_full_session
+            or current_desktop_is_kde
         ):
-            # Note that this is unfortunately a non-standard KDE extension.
-            # See https://gitlab.gnome.org/GNOME/gnome-settings-daemon/-/issues/632
-            # for details.
-            return lambda: __lock_screen_dbus(
-                destination="org.freedesktop.ScreenSaver",
-                path="/ScreenSaver",
-                method="Lock",
-            )
+            return kde_lock_screen
         elif (
             desktop_session in ["gnome", "unity", "budgie-desktop"]
             or desktop_session.startswith("ubuntu")
@@ -116,6 +127,8 @@ def __lock_screen_command() -> typing.Union[list[str], typing.Callable[[], None]
             ):
                 # Gnome 2
                 return ["gnome-screensaver-command", "--lock"]
+    elif kde_full_session or current_desktop_is_kde:
+        return kde_lock_screen
     return None
 
 
@@ -139,10 +152,15 @@ def __lock_screen_later():
 
 
 def __lock_screen_now() -> None:
+    """Lock the screen, after releasing Safe Eyes' X11 keyboard grab."""
     global lock_screen_command
 
     if lock_screen_command is None:
         return
+
+    # kscreenlocker needs its own X11 grab. Release ours before asking it to lock.
+    if context is not None:
+        context.api.release_keyboard()
 
     if isinstance(lock_screen_command, list):
         utility.execute_command(lock_screen_command)
