@@ -64,9 +64,12 @@ class API:
     def take_break(self, break_type: typing.Optional[BreakType] = None) -> None:
         utility.execute_main_thread(self._application.take_break, break_type)
 
-    def release_keyboard(self) -> None:
-        """Synchronously release the break screen X11 keyboard grab."""
-        self._application.break_screen.release_keyboard()
+    def release_keyboard(self) -> bool:
+        """Synchronously release the break screen X11 keyboard grab.
+
+        Returns True once no grab is held, or False if release failed.
+        """
+        return self._application.break_screen.release_keyboard()
 
     def restore_keyboard(self) -> None:
         """Restore the break screen X11 keyboard grab if a break is still shown."""

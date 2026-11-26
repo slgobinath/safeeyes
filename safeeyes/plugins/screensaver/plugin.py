@@ -154,7 +154,8 @@ def __lock_screen_later():
 def __lock_screen_now() -> None:
     """Lock the screen, after releasing Safe Eyes' X11 keyboard grab.
 
-    Restores the keyboard grab afterwards if the break is still on screen.
+    Skips locking if the keyboard grab cannot be released. Restores the
+    keyboard grab afterwards if the break is still on screen.
     """
     global lock_screen_command
 
@@ -162,8 +163,11 @@ def __lock_screen_now() -> None:
         return
 
     # kscreenlocker needs its own X11 grab. Release ours before asking it to lock.
-    if context is not None:
-        context.api.release_keyboard()
+    if context is not None and not context.api.release_keyboard():
+        logging.error(
+            "Skipping screen lock because the X11 keyboard grab could not be released"
+        )
+        return
 
     try:
         if isinstance(lock_screen_command, list):

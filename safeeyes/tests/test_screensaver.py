@@ -160,7 +160,7 @@ class TestScreensaverKeyboardGrab:
         screen, calls = self._grabbed_screen()
         try:
             started = time.monotonic()
-            screen.release_keyboard()
+            assert screen.release_keyboard() is True
             assert time.monotonic() - started < 0.5
             assert calls == ["grab", "flush", "ungrab", "sync"]
             assert screen._keyboard_lock_thread is None
@@ -206,8 +206,8 @@ class TestScreensaverKeyboardGrab:
         wayland = self._make_screen(mock.Mock(), is_wayland=True)
         skipped: list[str] = []
         wayland.on_skipped = lambda: skipped.append("skipped")
-        wayland.release_keyboard()
-        wayland.release_keyboard()
+        assert wayland.release_keyboard() is True
+        assert wayland.release_keyboard() is True
         assert wayland._keyboard_lock_thread is None
         assert not wayland._keyboard_release_event.is_set()
         wayland.skip_break()
@@ -216,8 +216,8 @@ class TestScreensaverKeyboardGrab:
         calls, display, ready = self._x11_display()
         screen = self._make_screen(display)
         # Releasing before a break must not block a later grab.
-        screen.release_keyboard()
-        screen.release_keyboard()
+        assert screen.release_keyboard() is True
+        assert screen.release_keyboard() is True
         self._start(screen, ready)
         thread = screen._keyboard_lock_thread
         assert thread is not None
@@ -366,7 +366,7 @@ class TestScreensaverKeyboardGrab:
         self._start(screen, ready)
         try:
             with caplog.at_level(logging.ERROR):
-                screen.release_keyboard()
+                assert screen.release_keyboard() is True
             assert screen._keyboard_lock_thread is None
             assert screen._keyboard_grab_held is False
             assert screen._keyboard_release_error is None
@@ -388,11 +388,12 @@ class TestScreensaverKeyboardGrab:
             raise RuntimeError("ungrab failed")
 
         display.ungrab_keyboard.side_effect = ungrab
+        display.close.side_effect = RuntimeError("close failed")
         screen = self._make_screen(display)
         self._start(screen, ready)
         try:
             with caplog.at_level(logging.ERROR):
-                screen.release_keyboard()
+                assert screen.release_keyboard() is False
             kept = screen._keyboard_lock_thread
             assert kept is not None
             assert not kept.is_alive()
@@ -402,7 +403,7 @@ class TestScreensaverKeyboardGrab:
             assert "keeping lock thread" in caplog.text
 
             # A later release retries and still does not drop the owner.
-            screen.release_keyboard()
+            assert screen.release_keyboard() is False
             assert screen._keyboard_lock_thread is kept
             assert screen._keyboard_grab_held is True
             assert calls.count("ungrab") == 3
@@ -412,6 +413,104 @@ class TestScreensaverKeyboardGrab:
             assert screen._keyboard_lock_thread is kept
             assert calls.count("grab") == 1
             assert "keeping the existing lock thread" in caplog.text
+        finally:
+            screen.release_keyboard()
+
+    def test_release_keyboard_reconnects_display_when_ungrab_fails(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        _, display, ready = self._x11_display()
+        display.ungrab_keyboard.side_effect = RuntimeError("ungrab failed")
+        fresh_display = mock.Mock()
+        screen = self._make_screen(display)
+        self._start(screen, ready)
+        try:
+            with mock.patch("Xlib.display.Display", return_value=fresh_display):
+                assert screen.release_keyboard() is True
+            display.close.assert_called_once_with()
+            assert screen.x11_display is fresh_display
+            assert screen._keyboard_grab_held is False
+            assert screen._keyboard_release_error is None
+            assert screen._keyboard_lock_thread is None
+        finally:
+            screen.release_keyboard()
+
+        # Reopen failure leaves x11_display None while preserving keycodes.
+        _, display2, ready2 = self._x11_display()
+        display2.ungrab_keyboard.side_effect = RuntimeError("ungrab failed")
+        screen2 = self._make_screen(display2)
+        screen2.keycode_shortcut_skip = 42
+        screen2.keycode_shortcut_postpone = 43
+        self._start(screen2, ready2)
+        try:
+            with (
+                caplog.at_level(logging.ERROR),
+                mock.patch(
+                    "Xlib.display.Display", side_effect=RuntimeError("reopen failed")
+                ),
+            ):
+                assert screen2.release_keyboard() is True
+            display2.close.assert_called_once_with()
+            assert screen2.x11_display is None
+            assert screen2.keycode_shortcut_skip == 42
+            assert screen2.keycode_shortcut_postpone == 43
+            assert screen2._keyboard_grab_held is False
+            assert screen2._keyboard_release_error is None
+            assert "Failed to reopen X11 display connection" in caplog.text
+        finally:
+            screen2.release_keyboard()
+
+    def test_lock_screen_now_skips_lock_when_release_fails(
+        self, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        _, display, ready = self._x11_display()
+        display.ungrab_keyboard.side_effect = RuntimeError("ungrab failed")
+        display.close.side_effect = RuntimeError("close failed")
+        screen = self._make_screen(display)
+        screen.windows.append(mock.Mock())
+        self._start(screen, ready)
+        lock_fn = mock.Mock()
+        self._bind_plugin(monkeypatch, screen, lock_fn)
+        restore = mock.Mock()
+        monkeypatch.setattr(screen, "restore_keyboard", restore)
+        try:
+            with caplog.at_level(logging.ERROR):
+                lock_screen_now()
+            lock_fn.assert_not_called()
+            restore.assert_not_called()
+            assert screen._keyboard_grab_held is True
+            assert "Skipping screen lock" in caplog.text
+        finally:
+            screen.release_keyboard()
+
+    def test_skip_postpone_and_close_when_release_fails(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        _, display, ready = self._x11_display()
+        display.ungrab_keyboard.side_effect = RuntimeError("ungrab failed")
+        display.close.side_effect = RuntimeError("close failed")
+        screen = self._make_screen(display)
+        window = mock.Mock()
+        screen.windows.append(window)
+        on_skipped = mock.Mock()
+        on_postponed = mock.Mock()
+        screen.on_skipped = on_skipped
+        screen.on_postponed = on_postponed
+        self._start(screen, ready)
+        try:
+            with caplog.at_level(logging.ERROR):
+                screen.skip_break()
+                screen.postpone_break()
+            on_skipped.assert_not_called()
+            on_postponed.assert_not_called()
+            window.destroy.assert_not_called()
+            assert screen.windows == [window]
+
+            with caplog.at_level(logging.ERROR):
+                screen.close()
+            window.destroy.assert_called_once_with()
+            assert screen.windows == []
+            assert "Closing break screen despite failing to release" in caplog.text
         finally:
             screen.release_keyboard()
 
