@@ -36,7 +36,7 @@ dnd_while_on_battery = False
 
 
 def is_active_window_skipped_wayland(pre_break):
-    cmdlist = ["wlrctl", "toplevel", "find", "state:fullscreen"]
+    cmdlist = ["wlrctl", "toplevel", "find", "state:active", "state:fullscreen"]
     try:
         process = subprocess.Popen(cmdlist, stdout=subprocess.PIPE)
         process.communicate()[0]
