@@ -447,3 +447,196 @@ class TestScreensaverKeyboardGrab:
         assert not isinstance(command, list)
         command()
         assert dbus_calls == [("org.freedesktop.ScreenSaver", "/ScreenSaver", "Lock")]
+
+    def test_restore_keyboard_retries_until_grab_succeeds(self) -> None:
+        from Xlib import X
+
+        calls, display, ready = self._x11_display()
+        statuses = iter([X.AlreadyGrabbed, X.AlreadyGrabbed, X.GrabSuccess])
+
+        def grab(*_args: object, **_kwargs: object) -> int:
+            calls.append("grab")
+            return next(statuses)
+
+        display.screen.return_value.root.grab_keyboard.side_effect = grab
+        screen = self._make_screen(display)
+        screen.windows.append(mock.Mock())
+        screen.keyboard_regrab_delay = 0.0
+        screen.keyboard_regrab_interval = 0.0
+        try:
+            screen.restore_keyboard()
+            assert ready.wait(2)
+            assert calls == ["grab", "grab", "grab", "flush"]
+            assert screen._keyboard_grab_held is True
+            thread = screen._keyboard_lock_thread
+            assert thread is not None
+            assert thread.is_alive()
+
+            # Calling restore again while the worker is alive does not spawn another.
+            screen.restore_keyboard()
+            assert screen._keyboard_lock_thread is thread
+
+            screen.close()
+            assert calls == ["grab", "grab", "grab", "flush", "ungrab", "sync"]
+            assert screen._keyboard_grab_held is False
+            assert screen._keyboard_lock_thread is None
+        finally:
+            screen.release_keyboard()
+
+    def test_restore_keyboard_is_noop_on_wayland_and_without_windows(self) -> None:
+        wayland = self._make_screen(mock.Mock(), is_wayland=True)
+        wayland.windows.append(mock.Mock())
+        wayland.restore_keyboard()
+        assert wayland._keyboard_lock_thread is None
+
+        calls, display, _ready = self._x11_display()
+        screen = self._make_screen(display)
+        screen.keyboard_regrab_delay = 0.0
+        screen.keyboard_regrab_interval = 0.0
+        screen.restore_keyboard()
+        assert screen._keyboard_lock_thread is None
+        assert calls == []
+
+    def test_release_keyboard_during_regrab_wait_stops_without_grabbing(self) -> None:
+        from Xlib import X
+
+        calls, display, _ready = self._x11_display()
+        screen = self._make_screen(display)
+        screen.windows.append(mock.Mock())
+        screen.keyboard_regrab_delay = 5.0
+        try:
+            screen.restore_keyboard()
+            thread = screen._keyboard_lock_thread
+            assert thread is not None
+            started = time.monotonic()
+            screen.release_keyboard()
+            assert time.monotonic() - started < 0.5
+            assert not thread.is_alive()
+            assert screen._keyboard_lock_thread is None
+            assert screen._keyboard_grab_held is False
+            assert calls == []
+        finally:
+            screen.release_keyboard()
+
+        # Releasing while waiting between AlreadyGrabbed retries does not ungrab.
+        calls, display, _ready = self._x11_display()
+        attempted = threading.Event()
+
+        def grab(*_args: object, **_kwargs: object) -> int:
+            calls.append("grab")
+            attempted.set()
+            return X.AlreadyGrabbed
+
+        display.screen.return_value.root.grab_keyboard.side_effect = grab
+        screen = self._make_screen(display)
+        screen.windows.append(mock.Mock())
+        screen.keyboard_regrab_delay = 0.0
+        screen.keyboard_regrab_interval = 5.0
+        try:
+            screen.restore_keyboard()
+            assert attempted.wait(2)
+            started = time.monotonic()
+            screen.release_keyboard()
+            assert time.monotonic() - started < 0.5
+            assert screen._keyboard_lock_thread is None
+            assert screen._keyboard_grab_held is False
+            assert calls == ["grab"]
+        finally:
+            screen.release_keyboard()
+
+    def test_lock_screen_now_restores_keyboard_after_lock_and_on_error(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from Xlib import X
+
+        calls, display, ready = self._x11_display()
+        statuses = iter([X.GrabSuccess, X.AlreadyGrabbed, X.GrabSuccess])
+
+        def grab(*_args: object, **_kwargs: object) -> int:
+            calls.append("grab")
+            return next(statuses)
+
+        display.screen.return_value.root.grab_keyboard.side_effect = grab
+        screen = self._make_screen(display)
+        screen.windows.append(mock.Mock())
+        screen.keyboard_regrab_delay = 0.0
+        screen.keyboard_regrab_interval = 0.0
+        self._start(screen, ready)
+        ready.clear()
+
+        seen: list[list[str]] = []
+
+        def execute_command(command: list[str], *_args: object) -> None:
+            seen.append(calls.copy())
+            assert command == ["loginctl", "lock-session"]
+
+        monkeypatch.setattr(
+            screensaver_plugin.utility, "execute_command", execute_command
+        )
+        self._bind_plugin(monkeypatch, screen, ["loginctl", "lock-session"])
+        try:
+            lock_screen_now()
+            assert seen == [["grab", "flush", "ungrab", "sync"]]
+            assert ready.wait(2)
+            assert calls == [
+                "grab",
+                "flush",
+                "ungrab",
+                "sync",
+                "grab",
+                "grab",
+                "flush",
+            ]
+            assert screen._keyboard_grab_held is True
+            screen.release_keyboard()
+            assert calls == [
+                "grab",
+                "flush",
+                "ungrab",
+                "sync",
+                "grab",
+                "grab",
+                "flush",
+                "ungrab",
+                "sync",
+            ]
+        finally:
+            screen.release_keyboard()
+
+        calls, display, ready = self._x11_display()
+
+        def grab_ok(*_args: object, **_kwargs: object) -> int:
+            calls.append("grab")
+            return X.GrabSuccess
+
+        display.screen.return_value.root.grab_keyboard.side_effect = grab_ok
+        screen = self._make_screen(display)
+        screen.windows.append(mock.Mock())
+        screen.keyboard_regrab_delay = 0.0
+        screen.keyboard_regrab_interval = 0.0
+        self._start(screen, ready)
+        ready.clear()
+
+        def failing_lock() -> None:
+            raise RuntimeError("lock failed")
+
+        self._bind_plugin(monkeypatch, screen, failing_lock)
+        try:
+            with pytest.raises(RuntimeError, match="lock failed"):
+                lock_screen_now()
+            assert ready.wait(2)
+            assert calls == ["grab", "flush", "ungrab", "sync", "grab", "flush"]
+            assert screen._keyboard_grab_held is True
+            screen.release_keyboard()
+            assert calls == [
+                "grab",
+                "flush",
+                "ungrab",
+                "sync",
+                "grab",
+                "flush",
+                "ungrab",
+                "sync",
+            ]
+        finally:
+            screen.release_keyboard()

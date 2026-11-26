@@ -68,6 +68,10 @@ class API:
         """Synchronously release the break screen X11 keyboard grab."""
         self._application.break_screen.release_keyboard()
 
+    def restore_keyboard(self) -> None:
+        """Restore the break screen X11 keyboard grab if a break is still shown."""
+        self._application.break_screen.restore_keyboard()
+
     def has_breaks(self, break_type=None) -> bool:
         return self._application.safe_eyes_core.has_breaks(break_type)
 

@@ -152,7 +152,10 @@ def __lock_screen_later():
 
 
 def __lock_screen_now() -> None:
-    """Lock the screen, after releasing Safe Eyes' X11 keyboard grab."""
+    """Lock the screen, after releasing Safe Eyes' X11 keyboard grab.
+
+    Restores the keyboard grab afterwards if the break is still on screen.
+    """
     global lock_screen_command
 
     if lock_screen_command is None:
@@ -162,10 +165,14 @@ def __lock_screen_now() -> None:
     if context is not None:
         context.api.release_keyboard()
 
-    if isinstance(lock_screen_command, list):
-        utility.execute_command(lock_screen_command)
-    else:
-        lock_screen_command()
+    try:
+        if isinstance(lock_screen_command, list):
+            utility.execute_command(lock_screen_command)
+        else:
+            lock_screen_command()
+    finally:
+        if context is not None:
+            context.api.restore_keyboard()
 
 
 def init(ctx, safeeyes_config, plugin_config):
