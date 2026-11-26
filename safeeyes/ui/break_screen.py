@@ -19,7 +19,7 @@
 
 import logging
 import os
-import time
+import threading
 import typing
 
 import gi
@@ -70,6 +70,15 @@ class BreakScreen:
         self.windows = []
         self.show_skip_button = False
         self.show_postpone_button = False
+        # Worker that holds the X11 keyboard grab, and a signal that wakes it.
+        # _keyboard_grab_held stays set until ungrab and sync both succeed, so a
+        # failed unlock keeps this thread as the owner instead of dropping it.
+        self._keyboard_lock_thread: typing.Optional[threading.Thread] = None
+        self._keyboard_release_event = threading.Event()
+        self._keyboard_grab_held = False
+        self._keyboard_release_error: typing.Optional[BaseException] = None
+        self.keyboard_regrab_delay = 5.0
+        self.keyboard_regrab_interval = 1.0
 
         if not self.context.is_wayland:
             import Xlib.display
@@ -104,16 +113,34 @@ class BreakScreen:
         self.strict_break = config.get("strict_break", False)
 
     def skip_break(self) -> None:
-        """Skip the break from the break screen."""
+        """Skip the break from the break screen.
+
+        Aborts without dismissing the break screen if the X11 keyboard grab
+        cannot be released, allowing the user to retry.
+        """
         logging.info("User skipped the break")
-        # Must call on_skipped before close to lock screen before closing the break
-        # screen
+        # Drop the X11 grab before on_skipped, which may lock the screen, but
+        # still lock before close so the break window is up while locking.
+        if not self.release_keyboard():
+            logging.error(
+                "Aborting skip because the X11 keyboard grab could not be released"
+            )
+            return
         self.on_skipped()
         self.close()
 
     def postpone_break(self) -> None:
-        """Postpone the break from the break screen."""
+        """Postpone the break from the break screen.
+
+        Aborts without dismissing the break screen if the X11 keyboard grab
+        cannot be released, allowing the user to retry.
+        """
         logging.info("User postponed the break")
+        if not self.release_keyboard():
+            logging.error(
+                "Aborting postpone because the X11 keyboard grab could not be released"
+            )
+            return
         self.on_postponed()
         self.close()
 
@@ -148,8 +175,11 @@ class BreakScreen:
         windows.
         """
         logging.info("Close the break screen(s)")
-        if not self.context.is_wayland:
-            self.__release_keyboard_x11()
+        if not self.release_keyboard():
+            # The core is ending the break, so still destroy the windows.
+            logging.error(
+                "Closing break screen despite failing to release the X11 keyboard grab"
+            )
 
         # Destroy other windows if exists
         self.__destroy_all_screens()
@@ -164,7 +194,7 @@ class BreakScreen:
         """Show an empty break screen on all screens."""
         # Lock the keyboard
         if not self.context.is_wayland:
-            utility.start_thread(self.__lock_keyboard_x11)
+            self.__start_keyboard_lock_x11()
 
         display = Gdk.Display.get_default()
 
@@ -295,48 +325,229 @@ class BreakScreen:
 
         self.x11_display.sync()
 
-    def __lock_keyboard_x11(self) -> None:
+    def release_keyboard(self) -> bool:
+        """Release the X11 keyboard grab and wait until the server has processed it.
+
+        No-op on Wayland. Safe to call more than once. Returns True once no
+        grab is held (including after falling back to closing and reopening the
+        X11 display connection), or False if the grab could not be confirmed
+        released.
+        """
+        if self.context.is_wayland:
+            return True
+
+        self._keyboard_release_event.set()
+        thread = self._keyboard_lock_thread
+        # Joining the worker from itself would deadlock. Its finally block
+        # releases the grab when this invocation returns.
+        if thread is threading.current_thread():
+            return not self._keyboard_grab_held
+
+        if thread is not None:
+            logging.info("Unlock the keyboard")
+            thread.join()
+
+        if self._keyboard_grab_held:
+            # The worker finished without a confirmed ungrab+sync. Retry here
+            # and, if it fails again, close the X11 connection as a last resort.
+            logging.error(
+                "X11 keyboard grab is still held (%s); retrying unlock",
+                self._keyboard_release_error,
+            )
+            self.__ungrab_keyboard_x11()
+        if self._keyboard_grab_held:
+            self.__reset_x11_display_for_release()
+        if self._keyboard_grab_held:
+            logging.error(
+                "Failed to release the X11 keyboard grab; keeping lock thread %r: %s",
+                self._keyboard_lock_thread,
+                self._keyboard_release_error,
+            )
+            return False
+
+        if self._keyboard_lock_thread is thread:
+            self._keyboard_lock_thread = None
+        return True
+
+    def __reset_x11_display_for_release(self) -> None:
+        """Close the X11 display to drop a stuck grab, then reopen it."""
+        x11_display = self.x11_display
+        if x11_display is None:
+            return
+
+        import Xlib.display
+        import Xlib.error
+
+        logging.error(
+            "Closing X11 display connection as a last resort to drop the keyboard grab"
+        )
+        try:
+            x11_display.close()
+        except Xlib.error.ConnectionClosedError:
+            logging.exception(
+                "X11 display connection already closed while releasing keyboard grab"
+            )
+        except Exception as exc:
+            self._keyboard_release_error = exc
+            logging.exception(
+                "Failed to close X11 display connection while releasing keyboard grab"
+            )
+            return
+
+        self.x11_display = None
+        self._keyboard_grab_held = False
+        self._keyboard_release_error = None
+
+        try:
+            self.x11_display = Xlib.display.Display()
+        except Exception:
+            logging.exception("Failed to reopen X11 display connection")
+
+    def restore_keyboard(self) -> None:
+        """Restore the X11 keyboard grab while a break screen is still shown.
+
+        No-op on Wayland or when no break screen windows are open.
+        """
+        if self.context.is_wayland or not self.windows:
+            return
+
+        self.__start_keyboard_lock_x11(wait_for_grab=True)
+
+    def __start_keyboard_lock_x11(self, wait_for_grab: bool = False) -> None:
+        """Grab the keyboard on a worker thread until release_keyboard()."""
+        # utility.start_thread does not return the Thread, but release_keyboard
+        # has to join this worker before a screen locker takes its own grab.
+        if self._keyboard_grab_held:
+            # Replacing the thread would drop a grab that ungrab or sync
+            # could not release.
+            logging.error(
+                "X11 keyboard grab is still held; keeping the existing lock thread"
+            )
+            return
+        if (
+            self._keyboard_lock_thread is not None
+            and self._keyboard_lock_thread.is_alive()
+        ):
+            return
+
+        self._keyboard_release_event.clear()
+        thread = threading.Thread(
+            target=self.__lock_keyboard_x11,
+            kwargs={"wait_for_grab": wait_for_grab},
+            name="WorkThread BreakScreen.__lock_keyboard_x11",
+            daemon=False,
+        )
+        self._keyboard_lock_thread = thread
+        thread.start()
+
+    def __lock_keyboard_x11(self, wait_for_grab: bool = False) -> None:
         """Lock the keyboard to prevent the user from using keyboard shortcuts.
 
         (X11 only)
         """
-        if self.x11_display is None:
+        x11_display = self.x11_display
+        if x11_display is None:
             return
 
         from Xlib import X
 
+        if wait_for_grab:
+            # Let a command-based locker (Popen) acquire its own grab first.
+            if self._keyboard_release_event.wait(self.keyboard_regrab_delay):
+                return
+
         logging.info("Lock the keyboard")
-        self.lock_keyboard = True
 
         # Grab the keyboard
-        root = self.x11_display.screen().root
+        root = x11_display.screen().root
         root.change_attributes(event_mask=X.KeyPressMask | X.KeyReleaseMask)
-        root.grab_keyboard(True, X.GrabModeAsync, X.GrabModeAsync, X.CurrentTime)
-
-        # Consume keyboard events
-        while self.lock_keyboard:
-            if self.x11_display.pending_events() > 0:
-                # Avoid waiting for next event by checking pending events
-                event = self.x11_display.next_event()
-                if self.enable_shortcut and event.type == X.KeyPress:
-                    if (
-                        event.detail == self.keycode_shortcut_skip
-                        and self.show_skip_button
-                    ):
-                        utility.execute_main_thread(lambda: self.skip_break())
+        self._keyboard_release_error = None
+        try:
+            if wait_for_grab:
+                while True:
+                    # Own the grab before calling the server so a failure after
+                    # acquisition still ungrabs in finally.
+                    self._keyboard_grab_held = True
+                    status = root.grab_keyboard(
+                        True, X.GrabModeAsync, X.GrabModeAsync, X.CurrentTime
+                    )
+                    if status == X.GrabSuccess:
                         break
-                    elif (
-                        event.detail == self.keycode_shortcut_postpone
-                        and self.show_postpone_button
-                    ):
-                        utility.execute_main_thread(lambda: self.postpone_break())
-                        break
+                    self._keyboard_grab_held = False
+                    logging.debug(
+                        "X11 keyboard grab not available yet (status=%s); retrying",
+                        status,
+                    )
+                    if self._keyboard_release_event.wait(self.keyboard_regrab_interval):
+                        return
             else:
-                # Reduce the CPU usage by sleeping for a second
-                time.sleep(1)
+                # Own the grab before calling the server. grab_keyboard can raise
+                # after the grab is taken, and flush can raise after it returns;
+                # either way the finally block still ungrabs and syncs.
+                self._keyboard_grab_held = True
+                root.grab_keyboard(
+                    True, X.GrabModeAsync, X.GrabModeAsync, X.CurrentTime
+                )
+            x11_display.flush()
 
-        self.x11_display.ungrab_keyboard(X.CurrentTime)
-        self.x11_display.flush()
+            # Consume keyboard events until the grab is released.
+            while not self._keyboard_release_event.is_set():
+                if x11_display.pending_events() > 0:
+                    # Avoid waiting for next event by checking pending events
+                    event = x11_display.next_event()
+                    if self.enable_shortcut and event.type == X.KeyPress:
+                        if (
+                            event.detail == self.keycode_shortcut_skip
+                            and self.show_skip_button
+                        ):
+                            utility.execute_main_thread(lambda: self.skip_break())
+                            break
+                        elif (
+                            event.detail == self.keycode_shortcut_postpone
+                            and self.show_postpone_button
+                        ):
+                            utility.execute_main_thread(lambda: self.postpone_break())
+                            break
+                else:
+                    # Block for up to a second, waking immediately when released.
+                    self._keyboard_release_event.wait(1)
+        finally:
+            if self._keyboard_grab_held:
+                self.__ungrab_keyboard_x11()
+
+    def __ungrab_keyboard_x11(self) -> None:
+        """Ungrab and sync. Keep the grab held when either call fails."""
+        x11_display = self.x11_display
+        if x11_display is None:
+            error = RuntimeError(
+                "X11 display is missing; keyboard grab may still be held"
+            )
+            self._keyboard_release_error = error
+            logging.error("%s", error)
+            return
+
+        from Xlib import X
+
+        failures: list[BaseException] = []
+        try:
+            x11_display.ungrab_keyboard(X.CurrentTime)
+        except Exception as exc:
+            failures.append(exc)
+            logging.exception("Failed to ungrab the X11 keyboard")
+        try:
+            # sync() blocks until the X server has processed the ungrab.
+            x11_display.sync()
+        except Exception as exc:
+            failures.append(exc)
+            logging.exception("Failed to sync the X11 keyboard ungrab")
+
+        if failures:
+            # Ownership stays with _keyboard_lock_thread until a later retry.
+            self._keyboard_release_error = failures[0]
+            return
+
+        self._keyboard_grab_held = False
+        self._keyboard_release_error = None
 
     def on_key_pressed_wayland(
         self, event_controller_key, keyval, keycode, state
@@ -350,11 +561,6 @@ class BreakScreen:
                 return True
 
         return False
-
-    def __release_keyboard_x11(self) -> None:
-        """Release the locked keyboard."""
-        logging.info("Unlock the keyboard")
-        self.lock_keyboard = False
 
     def __destroy_all_screens(self) -> None:
         """Close all the break screens."""
